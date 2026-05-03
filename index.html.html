@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Dopamin Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#101014;--bg2:#18181f;--card:#1e1e27;--card2:#26262f;
+  --line:#2a2a35;--line2:#33333f;
+  --t1:#f4f4f6;--t2:#9999aa;--t3:#555566;
+  --blue:#3b82f6;--blue-bg:rgba(59,130,246,0.12);
+  --green:#00c471;--green-bg:rgba(0,196,113,0.12);
+  --red:#ff4e4e;--red-bg:rgba(255,78,78,0.12);
+  --yellow:#f5a623;--yellow-bg:rgba(245,166,35,0.12);
+  --purple:#8b5cf6;--purple-bg:rgba(139,92,246,0.12);
+  --r:16px;--r-sm:10px;--r-xs:7px;
+  /* 등급별 글로우 컬러 */
+  --glow-S:rgba(255,78,78,0.5);
+  --glow-A:rgba(245,166,35,0.5);
+  --glow-B:rgba(59,130,246,0.5);
+  --glow-C:rgba(0,196,113,0.4);
+}
+html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretendard',-apple-system,'Apple SD Gothic Neo',sans-serif;overflow:hidden;font-size:15px}
+#app{display:flex;flex-direction:column;height:100vh;max-width:480px;margin:0 auto}
+.topbar{padding:20px 20px 0;flex-shrink:0}
+.topbar-row{display:flex;align-items:center;justify-content:space-between}
+.topbar-brand{font-size:13px;font-weight:700;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+.topbar-title{font-size:24px;font-weight:800;color:var(--t1);margin-top:4px;letter-spacing:-.6px}
+.bank-card{margin:14px 20px 0;background:var(--blue);border-radius:20px;padding:20px;position:relative;overflow:hidden}
+.bank-card::before{content:'';position:absolute;top:-30px;right:-30px;width:130px;height:130px;background:rgba(255,255,255,.07);border-radius:50%}
+.bank-card::after{content:'';position:absolute;bottom:-40px;right:20px;width:90px;height:90px;background:rgba(255,255,255,.05);border-radius:50%}
+.bank-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.65);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.bank-amount{font-size:34px;font-weight:800;color:#fff;letter-spacing:-1px;line-height:1}
+.bank-status{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:600;color:rgba(255,255,255,.8);background:rgba(255,255,255,.15);padding:4px 10px;border-radius:20px}
+.bank-stats-row{display:flex;gap:0;margin-top:16px;border-top:1px solid rgba(255,255,255,.12);padding-top:14px}
+.bstat{flex:1;text-align:center}
+.bstat+.bstat{border-left:1px solid rgba(255,255,255,.12)}
+.bstat-val{font-size:14px;font-weight:700;color:#fff}
+.bstat-lbl{font-size:10px;font-weight:500;color:rgba(255,255,255,.5);margin-top:2px}
+.scroll{flex:1;overflow-y:auto;padding:16px 20px 120px;scrollbar-width:none}
+.scroll::-webkit-scrollbar{display:none}
+.sec-head{display:flex;align-items:center;justify-content:space-between;margin:20px 0 10px}
+.sec-title{font-size:13px;font-weight:700;color:var(--t2);letter-spacing:.04em}
+.sec-more{font-size:12px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer;font-family:inherit;padding:0}
+
+/* ── 등급별 글로우 강화된 퀘스트 카드 ── */
+.qcard{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:8px;border:1px solid var(--line);cursor:pointer;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden}
+.qcard:active{background:var(--card2)}
+.qcard.done{opacity:.4}
+/* 등급별 글로우 */
+.qcard.diff-S{border-color:rgba(255,78,78,0.4);box-shadow:0 0 12px var(--glow-S),inset 0 0 20px rgba(255,78,78,0.03)}
+.qcard.diff-A{border-color:rgba(245,166,35,0.4);box-shadow:0 0 12px var(--glow-A),inset 0 0 20px rgba(245,166,35,0.03)}
+.qcard.diff-B{border-color:rgba(59,130,246,0.35);box-shadow:0 0 10px var(--glow-B),inset 0 0 20px rgba(59,130,246,0.03)}
+.qcard.diff-C{border-color:rgba(0,196,113,0.3);box-shadow:0 0 8px var(--glow-C)}
+/* 완료 플래시 애니메이션 */
+@keyframes cardFlash{
+  0%{transform:scale(1);filter:brightness(1)}
+  20%{transform:scale(1.03);filter:brightness(1.6)}
+  40%{transform:scale(0.98);filter:brightness(1.3)}
+  70%{transform:scale(1.01);filter:brightness(1.1)}
+  100%{transform:scale(1);filter:brightness(1)}
+}
+.qcard.flash{animation:cardFlash .5s ease-out}
+.qcard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}
+.qcard-title{font-size:15px;font-weight:700;color:var(--t1);line-height:1.35;flex:1}
+.qcard-reward{font-size:15px;font-weight:800;color:var(--blue);white-space:nowrap}
+.qcard-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.tag{font-size:11px;font-weight:600;padding:3px 8px;border-radius:6px}
+.tag-cat{background:var(--card2);color:var(--t2)}
+/* 등급 배지 강화 */
+.tag-S{background:linear-gradient(135deg,rgba(255,78,78,0.25),rgba(255,78,78,0.12));color:#ff8080;border:1px solid rgba(255,78,78,0.4);font-weight:800;letter-spacing:.05em}
+.tag-A{background:linear-gradient(135deg,rgba(245,166,35,0.25),rgba(245,166,35,0.12));color:#f5a623;border:1px solid rgba(245,166,35,0.4);font-weight:800}
+.tag-B{background:linear-gradient(135deg,rgba(59,130,246,0.2),rgba(59,130,246,0.08));color:#60a5fa;border:1px solid rgba(59,130,246,0.35);font-weight:700}
+.tag-C{background:linear-gradient(135deg,rgba(0,196,113,0.2),rgba(0,196,113,0.08));color:#34d399;border:1px solid rgba(0,196,113,0.3);font-weight:700}
+.tag-rep{background:var(--purple-bg);color:var(--purple)}
+.tag-sin{background:var(--blue-bg);color:var(--blue)}
+.qcard-story{font-size:12px;color:var(--t3);font-style:italic;margin-bottom:10px;padding:8px 10px;background:var(--bg2);border-radius:var(--r-xs);line-height:1.5}
+.qcard-foot{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.qcard-meta{font-size:11px;color:var(--t3);line-height:1.7}
+.qcard-meta b{color:var(--t2);font-weight:600}
+.qcard-edit-hint{font-size:10px;color:var(--t3);text-align:right;margin-top:8px}
+.btn{border:none;border-radius:var(--r-sm);padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-purple{background:var(--purple-bg);color:var(--purple);border:1px solid rgba(139,92,246,.2)}
+.btn-ghost{background:var(--card2);color:var(--t2);border:1px solid var(--line2)}
+.btn-disabled{background:var(--card2);color:var(--t3);cursor:not-allowed}
+.btn-red{background:var(--red-bg);color:var(--red);border:1px solid rgba(255,78,78,.2)}
+/* 리워드 카드 */
+.rcard{background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:8px;border:1px solid var(--line);cursor:pointer;transition:border-color .2s,box-shadow .2s}
+.rcard:active{background:var(--card2)}
+/* 리워드 등급 글로우 */
+.rcard.rank-glow-S{border-color:rgba(255,78,78,0.4);box-shadow:0 0 14px var(--glow-S)}
+.rcard.rank-glow-A{border-color:rgba(245,166,35,0.4);box-shadow:0 0 12px var(--glow-A)}
+.rcard.rank-glow-B{border-color:rgba(59,130,246,0.35);box-shadow:0 0 10px var(--glow-B)}
+.rcard.rank-glow-C{border-color:rgba(0,196,113,0.3);box-shadow:0 0 8px var(--glow-C)}
+/* 리워드 해금 애니메이션 */
+@keyframes unlockPulse{
+  0%{box-shadow:0 0 0 0 rgba(0,196,113,0.6)}
+  50%{box-shadow:0 0 0 8px rgba(0,196,113,0)}
+  100%{box-shadow:0 0 0 0 rgba(0,196,113,0)}
+}
+.rcard.newly-unlocked{animation:unlockPulse 1s ease-out 2}
+.rcard-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:6px}
+.rcard-title{font-size:15px;font-weight:700;color:var(--t1)}
+.rank-tag{font-size:11px;font-weight:800;padding:3px 9px;border-radius:6px;letter-spacing:.04em}
+.rank-S{background:linear-gradient(135deg,rgba(255,78,78,0.3),rgba(255,78,78,0.15));color:#ff8080;border:1px solid rgba(255,78,78,0.45)}
+.rank-A{background:linear-gradient(135deg,rgba(245,166,35,0.3),rgba(245,166,35,0.15));color:#f5a623;border:1px solid rgba(245,166,35,0.45)}
+.rank-B{background:linear-gradient(135deg,rgba(59,130,246,0.25),rgba(59,130,246,0.1));color:#60a5fa;border:1px solid rgba(59,130,246,0.4)}
+.rank-C{background:linear-gradient(135deg,rgba(0,196,113,0.25),rgba(0,196,113,0.1));color:#34d399;border:1px solid rgba(0,196,113,0.35)}
+.rcard-cost{font-size:20px;font-weight:800;color:var(--t1);margin-bottom:6px}
+.rcard-desc{font-size:12px;color:var(--t2);margin-bottom:3px}
+.rcard-rules{font-size:11px;color:var(--t3);margin-bottom:10px}
+.rcard-stats{font-size:11px;color:var(--t3);margin-bottom:10px}
+.insuf{font-size:11px;color:var(--red);margin-top:6px;display:flex;align-items:center;gap:4px}
+.log-card{background:var(--card);border-radius:var(--r);padding:4px 16px;margin-bottom:8px;border:1px solid var(--line)}
+.log-row{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.log-row:last-child{border-bottom:none}
+.log-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.log-ico-earn{background:var(--green-bg)}
+.log-ico-spend{background:var(--red-bg)}
+.log-body{flex:1;min-width:0}
+.log-name{font-size:13px;font-weight:600;color:var(--t1);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.log-time{font-size:11px;color:var(--t3);margin-top:1px}
+.log-memo-txt{font-size:11px;color:var(--purple);margin-top:2px;font-style:italic}
+.log-memo-btn{background:none;border:none;font-size:11px;color:var(--t3);cursor:pointer;padding:0;font-family:inherit;text-decoration:underline;margin-top:2px;display:inline-block}
+.log-amt{font-size:14px;font-weight:800;flex-shrink:0}
+.log-earn{color:var(--green)}
+.log-spend{color:var(--red)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.stat-card{background:var(--card);border-radius:var(--r);padding:16px;border:1px solid var(--line)}
+.stat-num{font-size:20px;font-weight:800;color:var(--t1);letter-spacing:-.3px}
+.stat-lbl{font-size:11px;color:var(--t3);margin-top:3px;font-weight:500}
+.bar-list{background:var(--card);border-radius:var(--r);padding:14px 16px;border:1px solid var(--line);margin-bottom:8px}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.bar-row:last-child{margin-bottom:0}
+.bar-lbl{font-size:12px;color:var(--t2);width:80px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:500}
+.bar-track{flex:1;height:5px;background:var(--line2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;background:var(--blue);border-radius:3px}
+.bar-val{font-size:11px;color:var(--t2);width:60px;text-align:right;font-weight:600}
+.top-list{background:var(--card);border-radius:var(--r);padding:4px 16px;border:1px solid var(--line)}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:300;display:flex;align-items:flex-end;justify-content:center}
+.modal{background:var(--bg2);border:1px solid var(--line2);border-radius:24px 24px 0 0;padding:12px 20px 48px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-drag{width:36px;height:4px;background:var(--line2);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:18px;font-weight:800;color:var(--t1);margin-bottom:4px;letter-spacing:-.3px}
+.modal-sub{font-size:13px;color:var(--t2);margin-bottom:20px;font-weight:500}
+.form-group{margin-bottom:14px}
+.form-label{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:6px;display:block;letter-spacing:.04em}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--card);border:1px solid var(--line2);border-radius:var(--r-sm);color:var(--t1);padding:11px 13px;font-size:14px;outline:none;transition:border .15s;font-family:inherit;font-weight:500}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue)}
+.form-select option{background:var(--bg2)}
+.form-textarea{resize:vertical;min-height:72px}
+.form-tip{font-size:11px;color:var(--t3);margin-top:5px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-btns{display:flex;gap:8px;margin-top:8px}
+.sub-tabs{display:flex;gap:4px;margin-bottom:14px;overflow-x:auto;scrollbar-width:none}
+.sub-tabs::-webkit-scrollbar{display:none}
+.stab{background:var(--card2);border:1px solid var(--line);border-radius:var(--r-xs);color:var(--t3);padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s}
+.stab.on{background:var(--blue-bg);border-color:rgba(59,130,246,.3);color:var(--blue)}
+.bnav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:rgba(16,16,20,.9);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--line);padding:10px 8px 32px;display:flex;justify-content:space-around;z-index:100}
+.bnav-btn{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--t3);font-family:inherit;transition:color .15s;padding:4px 10px;border-radius:var(--r-sm)}
+.bnav-btn .ico{font-size:21px;line-height:1}
+.bnav-btn .lbl{font-size:10px;font-weight:700;letter-spacing:.02em}
+.bnav-btn.on{color:var(--blue)}
+.fab{position:fixed;bottom:88px;right:max(20px,calc(50vw - 220px));background:var(--blue);color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:24px;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 24px rgba(59,130,246,.4);transition:all .2s;z-index:99;font-family:inherit;line-height:1}
+.fab:active{transform:scale(.95)}
+.fab.show{display:flex}
+/* 기본 토스트 */
+.toast{position:fixed;top:24px;left:50%;transform:translateX(-50%) translateY(-60px);background:var(--card2);color:var(--t1);border:1px solid var(--line2);padding:11px 20px;border-radius:30px;font-size:13px;font-weight:600;z-index:999;pointer-events:none;opacity:0;transition:all .3s;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* 리워드 해금 토스트 (초록 특수) */
+.unlock-toast{position:fixed;top:80px;left:50%;transform:translateX(-50%) translateY(-40px) scale(0.9);background:linear-gradient(135deg,#064e3b,#065f46);color:#6ee7b7;border:1px solid rgba(0,196,113,0.5);padding:12px 20px;border-radius:14px;font-size:13px;font-weight:700;z-index:998;pointer-events:none;opacity:0;transition:all .4s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;display:flex;align-items:center;gap:8px;box-shadow:0 4px 20px rgba(0,196,113,0.3)}
+.unlock-toast.show{opacity:1;transform:translateX(-50%) translateY(0) scale(1)}
+.unlock-toast-ico{font-size:18px}
+.empty{text-align:center;padding:36px 20px}
+.empty-ico{font-size:34px;margin-bottom:8px}
+.empty-txt{font-size:13px;color:var(--t3);line-height:1.6;font-weight:500}
+.emoji-picker{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.emoji-cat{display:flex;flex-direction:column;align-items:center;gap:3px;background:var(--card2);border:1px solid var(--line);border-radius:var(--r-sm);padding:8px 4px;cursor:pointer;transition:all .15s}
+.emoji-cat:hover,.emoji-cat.sel{border-color:var(--blue);background:var(--blue-bg)}
+.emoji-cat .ec-ico{font-size:20px;line-height:1}
+.emoji-cat .ec-lbl{font-size:9px;color:var(--t3);font-weight:600;text-align:center}
+.emoji-cat.sel .ec-lbl{color:var(--blue)}
+.emoji-chips{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+.emoji-chip{font-size:18px;padding:5px 9px;background:var(--card2);border:1px solid var(--line);border-radius:var(--r-xs);cursor:pointer;transition:all .12s;line-height:1}
+.emoji-chip:hover,.emoji-chip.sel{background:var(--blue-bg);border-color:var(--blue)}
+
+/* ── 파티클 폭발 ── */
+.particle{position:fixed;pointer-events:none;z-index:9999;font-size:18px;animation:particleFly var(--dur,0.9s) ease-out forwards}
+@keyframes particleFly{
+  0%{opacity:1;transform:translate(0,0) scale(1) rotate(0deg)}
+  100%{opacity:0;transform:translate(var(--tx,0px),var(--ty,-80px)) scale(0) rotate(var(--rot,360deg))}
+}
+/* 리워드 해금 뱃지 */
+.unlock-badge{display:inline-flex;align-items:center;gap:3px;background:var(--green-bg);color:var(--green);border:1px solid rgba(0,196,113,0.3);font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;margin-left:4px}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="topbar">
+    <div class="topbar-row"><span class="topbar-brand">Dopamin Quest</span><span style="font-size:18px">⚡</span></div>
+    <div class="topbar-title" id="page-title">대시보드</div>
+  </div>
+  <div id="bank-area"></div>
+  <div class="scroll" id="main"></div>
+  <nav class="bnav">
+    <button class="bnav-btn on" id="bn-dash" onclick="go('dash')"><span class="ico">🏠</span><span class="lbl">홈</span></button>
+    <button class="bnav-btn" id="bn-quests" onclick="go('quests')"><span class="ico">⚔️</span><span class="lbl">퀘스트</span></button>
+    <button class="bnav-btn" id="bn-rewards" onclick="go('rewards')"><span class="ico">🎁</span><span class="lbl">리워드</span></button>
+    <button class="bnav-btn" id="bn-logs" onclick="go('logs')"><span class="ico">📋</span><span class="lbl">로그</span></button>
+    <button class="bnav-btn" id="bn-stats" onclick="go('stats')"><span class="ico">📊</span><span class="lbl">통계</span></button>
+  </nav>
+</div>
+<button class="fab" id="fab" onclick="onFab()">＋</button>
+<div class="toast" id="toast"></div>
+<div class="unlock-toast" id="unlock-toast"><span class="unlock-toast-ico">🔓</span><span id="unlock-toast-msg"></span></div>
+<div id="mroot"></div>
+<canvas id="particle-canvas" style="position:fixed;inset:0;pointer-events:none;z-index:9999;width:100%;height:100%"></canvas>
+
+<script>
+/* ── DATA ── */
+const DATA_VER='notion_v1';
+const SK={Q:'dq_q3',QL:'dq_ql3',R:'dq_r3',PL:'dq_pl3'};
+const SQ=[{"id":"q_001","title":"완전 실행의 주간","type":"반복","reward":100000,"deadline":"2026-04-26","difficulty":"B","category":"mind","status":"예정","active":false,"isCompleted":false,"condition":"다음 주 7일 동안 기존에 세운 모든 마이루틴(운동, 학습 등)을 1회도 빠짐없이 100% 이행\n* 회식 등으로 이행 불가 시 주말에 해당 활동 완료","story":"루틴은 단순히 반복되는 행위가 아니라, 당신이라는 거대한 직물을 짜는 한 올 한 올의 실타래입니다.\n이 퀘스트는 당신이 스스로 정한 모든 실타래를 한 치의 오차 없이 연결하여, 완벽하게 조율된 당신의 한 주를 완성하는 여정입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-04-26","createdAt":"2026-05-03T00:00:00"},{"id":"q_002","title":"이지 퀘스트: 피아노 소곡집 1","type":"단발","reward":100000,"deadline":"2026-04-30","difficulty":"C","category":"skill","status":"진행중","active":false,"isCompleted":false,"condition":"'피아노소곡집1' 수록곡 중 순서대로 5곡을 악보 중단 없이, 처음부터 끝까지 자연스러운 흐름으로 완주 (암보 불필요, 악보 리딩 허용).\n\n*해당 퀘스트는 달성 시 다음 5개 곡으로 추가 퀘스트 도전 가능","story":"단순히 악보 위의 콩나물을 읽어내는 행위가 아닙니다. 이 퀘스트는 당신의 손끝을 통해 잉크로 박제된 악보 속 멜로디에 생명력을 불어넣는 과정입니다. 건반을 누르는 매 순간, 당신은 현실의 소음을 잠재우고 환상의 세계로 향하는 문을 직접 열게 될 것입니다. 다섯 곡의 완주는 곧 당신의 감각이 마법의 언어를 습득했음을 증명하는 서막입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-04-30","createdAt":"2026-05-03T00:00:00"},{"id":"q_003","title":"계산된 일탈🃏","type":"반복","reward":50000,"deadline":null,"difficulty":"C","category":"life_environment","status":"완료","active":false,"isCompleted":true,"condition":"핵심 과업 3종 격파: 술자리 이동 전(또는 퇴근 전)까지 아래 항목을 모두 완수.\n1. 재무관리사 공부 50분: 집중 모드로 1회차 세션 완료.\n2. 스픽 10분: 오늘의 학습 및 스피킹 훈련 완료.\n3. 헬스 다녀오기: 웨이트 또는 유산소 트레이닝 세션 종료.","story":"가장 무거운 과업들을 해가 지기 전에 해치우는 것은 아무나 할 수 있는 일이 아닙니다.\n재무의 언어를 깨우치고, 외국어의 감각을 깨우며, 육체의 한계까지 몰아붙인 자만이 '취할 자격'을 얻습니다.\n오늘 당신의 술자리는 단순한 유희가 아닙니다. 폭발적인 집중력으로 하루를 압축해버린 자가 누리는 당당한 승전 파티가 될 것입니다.","note":"","completedCount":1,"totalEarned":30000,"lastCompletedAt":"2026-05-03T00:00:00","startDate":"","dueDate":"","createdAt":"2026-05-03T00:00:00"},{"id":"q_004","title":"첫 번째 현금 흐름","type":"단발","reward":100000,"deadline":"2026-04-30","difficulty":"B","category":"money_asset","status":"진행중","active":false,"isCompleted":false,"condition":"10만 원 이상의 월 추가 수익 발생 (애드센스, 디지털 판매, 자동수익, 프리랜스 등 모든 형태 포함)","story":"진정한 경제적 독립은 월급 통장 밖에서 당신의 노력이 현실의 가치로 환산될 때 시작됩니다.\n이 퀘스트는 당신이 구축한 작은 시스템이 자율적으로 첫 번째 수익을 창출하는 순간을 기념합니다.\n10만 원이라는 숫자는 단순한 금액이 아니라, 당신의 아이디어와 노력이 시장에서 인정받았음을 증명하는 첫 번째 증표가 될 것입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-04-30","createdAt":"2026-05-03T00:00:00"},{"id":"q_005","title":"스테이 헬시 (Stay Healthy)","type":"반복","reward":150000,"deadline":"2026-05-19","difficulty":"C","category":"body","status":"진행중","active":false,"isCompleted":false,"condition":"• 주 5회 이상 헬스장 방문 및 운동 수행 (최소 40분 이상 체류)\n• 4주(한 달)간 해당 루틴을 한 번의 실패 없이 유지","story":"건강을 유지한다는 것은 단순히 질병이 없는 상태가 아니라, 내 몸의 주도권을 온전히 쥐고 있다는 선언입니다. 매주 5번, 체육관의 문을 여는 행위는 나태함이라는 중력을 거스르는 고귀한 저항입니다. 이 반복되는 움직임 속에서 당신은 단순한 운동인이 아닌, 스스로의 삶을 조율하는 설계자로 거듭납니다. 땀방울이 바닥에 닿는 순간, 당신의 세계는 조금 더 단단해집니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-05-19","createdAt":"2026-05-03T00:00:00"},{"id":"q_006","title":"투자의 언어를 깨닫다","type":"단발","reward":500000,"deadline":"2026-09-13","difficulty":"A","category":"skill","status":"예정","active":false,"isCompleted":false,"condition":"재무위험관리사 자격증 합격","story":"투자는 단순한 돈의 증식이 아니라, 경제와 시장의 흐름을 읽는 새로운 언어를 배우는 과정입니다.\n이 퀘스트는 당신이 금융 지식을 습득하고, 그 언어로 세상과 소통할 수 있음을 증명하는 서사입니다.\n재무위험관리사 자격증 합격은 단순한 시험 통과를 넘어, 당신이 경제적 가치 창출의 주체로서 깨어났음을 선언하는 일입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-09-13","createdAt":"2026-05-03T00:00:00"},{"id":"q_007","title":"프로젝트 74","type":"단발","reward":500000,"deadline":"2026-09-19","difficulty":"A","category":"body","status":"진행중","active":false,"isCompleted":false,"condition":"체중 74.0kg 이하 달성 (공복 기준, 동일 체중계 측정)","story":"74.0kg라는 숫자는 단순한 체중계의 수치를 넘어, 당신의 자기 통제력과 의지력이 완벽하게 조율된 결과입니다.\n이 퀘스트는 무의식적 습관을 의식적 노력으로 바꾸어, 당신의 신체를 스스로의 통제하에 두는 과정입니다.\n오직 당신만이 이룰 수 있는 이 경계를 넘어섬으로써, 당신은 스스로에게 약속했던 새로운 몸을 완성하게 될 것입니다.","note":"","completedCount":1,"totalEarned":500000,"lastCompletedAt":"2026-05-03T00:00:00","startDate":"","dueDate":"2026-09-19","createdAt":"2026-05-03T00:00:00"},{"id":"q_008","title":"한 번의 흐름으로 완주하라","type":"단발","reward":300000,"deadline":null,"difficulty":"A","category":"skill","status":"완료","active":false,"isCompleted":true,"condition":"'Everything Happens to Me'를 처음부터 끝까지 한 번도 틀리지 않고 완주","story":"수많은 연습과 도전 속에서 수없이 멈추고 다시 시작했던 시간.\n이 퀘스트는 그 모든 과정을 지나, 처음부터 끝까지 단 한 번의 끊김 없이 완벽하게 곡을 연주하는 순간을 기록합니다.\n'한 번의 흐름으로 완주하라'는 명칭은 단순한 성공을 넘어, 집중력과 기술, 그리고 감정적 몰입이 하나로 통합되었음을 증명하는 서사입니다.\n이 여정의 끝에서, 당신은 비로소 곡의 진정한 주인이 될 것입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"","createdAt":"2026-05-03T00:00:00"}];
+const SR=[{"id":"r_001","title":"무신사 / 29cm 머니 충전 50K","cost":50000,"rank":"C","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_002","title":"무신사 / 29cm 머니 충전 30K","cost":30000,"rank":"C","isPurchased":true,"rewardModule":"","rules":"","totalPurchasedCount":1,"totalSpent":30000,"createdAt":"2026-05-03T00:00:00"},{"id":"r_003","title":"젠틀몬스터 안경","cost":250000,"rank":"B","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_004","title":"아크네 목도리","cost":200000,"rank":"B","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_005","title":"무신사 / 29cm 머니 충전 100K","cost":100000,"rank":"C","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_006","title":"정장","cost":300000,"rank":"B","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_007","title":"다연이 디올 스카프","cost":500000,"rank":"A","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_008","title":"허먼밀러 뉴에어론","cost":1500000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_009","title":"크롬하츠 부바a (안경)","cost":2000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_010","title":"르메르 크루아상 라지 (가방)","cost":3000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_011","title":"보테가 디아고 라지 (가방)","cost":4000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_012","title":"🔴 Mythic 리워드","cost":10000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_013","title":"🟠 Immortal 리워드","cost":100000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_014","title":"⚜️ Transcendent 리워드","cost":1000000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"}];
+const SQL=[{"id":"ql_001","questId":"q_003","questTitleSnapshot":"계산된일탈/ 20260503","completedAt":"2026-05-03T00:00:00","earnedReward":30000,"memo":""},{"id":"ql_002","questId":"q_007","questTitleSnapshot":"✅ 프로젝트 74 (+500000)","completedAt":"2026-05-03T00:00:00","earnedReward":500000,"memo":""}];
+const SPL=[{"id":"pl_001","rewardId":"r_004","rewardTitleSnapshot":"구매: 아크네 목도리","purchasedAt":"2026-05-03T00:00:00","spentCost":200000,"memo":""}];
+
+function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch{return d}}
+function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
+
+if(localStorage.getItem('dq_ver')!==DATA_VER){
+  sv(SK.Q,JSON.parse(JSON.stringify(SQ)));sv(SK.R,JSON.parse(JSON.stringify(SR)));
+  sv(SK.QL,JSON.parse(JSON.stringify(SQL)));sv(SK.PL,JSON.parse(JSON.stringify(SPL)));
+  localStorage.setItem('dq_ver',DATA_VER);
+}
+let Q=ld(SK.Q,SQ),QL=ld(SK.QL,SQL),R=ld(SK.R,SR),PL=ld(SK.PL,SPL);
+function saveAll(){sv(SK.Q,Q);sv(SK.QL,QL);sv(SK.R,R);sv(SK.PL,PL)}
+
+/* ── BANK ── */
+function bk(){
+  const te=QL.reduce((s,l)=>s+l.earnedReward,0);
+  const ts=PL.reduce((s,l)=>s+l.spentCost,0);
+  const now=new Date(),ms=new Date(now.getFullYear(),now.getMonth(),1);
+  const me=QL.filter(l=>new Date(l.completedAt)>=ms).reduce((s,l)=>s+l.earnedReward,0);
+  const msp=PL.filter(l=>new Date(l.purchasedAt)>=ms).reduce((s,l)=>s+l.spentCost,0);
+  return{te,ts,bal:te-ts,me,msp,mnet:me-msp};
+}
+const W=n=>'₩'+Number(n).toLocaleString('ko-KR');
+const FD=s=>{if(!s)return'-';const d=new Date(s);return`${d.getMonth()+1}.${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`};
+const uid=()=>Math.random().toString(36).slice(2)+Date.now().toString(36);
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+const CE={몸:'💪',마음:'🧘',스킬:'🎯','일/프로젝트':'💼','자산/돈':'💰','생활/환경':'🏡'};
+
+/* ── STATE ── */
+let pg='dash',qT='진행중',rT='전체',lT='전체',lTy='quest';
+
+/* ── TOAST ── */
+function toast(m,c){
+  const t=document.getElementById('toast');
+  t.textContent=m;t.style.color=c||'';
+  t.classList.add('show');clearTimeout(t._x);
+  t._x=setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+/* ── 리워드 해금 토스트 ── */
+function showUnlockToast(rewardTitle){
+  const el=document.getElementById('unlock-toast');
+  const msg=document.getElementById('unlock-toast-msg');
+  msg.textContent=`"${rewardTitle}" 해금! 지금 구매 가능해요`;
+  el.classList.add('show');
+  clearTimeout(el._x);
+  el._x=setTimeout(()=>el.classList.remove('show'),3200);
+}
+
+/* ── 파티클 폭발 효과 ── */
+const PARTICLES=['⭐','✨','💫','🌟','💥','🎉','🎊','⚡','💰','🔥'];
+function explodeParticles(x,y,count=14){
+  const canvas=document.getElementById('particle-canvas');
+  canvas.width=window.innerWidth;canvas.height=window.innerHeight;
+  const ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const particles=[];
+  for(let i=0;i<count;i++){
+    const angle=(Math.PI*2/count)*i+Math.random()*0.5;
+    const speed=80+Math.random()*120;
+    particles.push({
+      x,y,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed-60,
+      life:1,
+      emoji:PARTICLES[Math.floor(Math.random()*PARTICLES.length)],
+      size:16+Math.random()*12,
+      rot:Math.random()*360,
+      rotV:(Math.random()-0.5)*20,
+    });
+  }
+  let last=performance.now();
+  function frame(now){
+    const dt=(now-last)/1000;last=now;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    let alive=false;
+    particles.forEach(p=>{
+      p.x+=p.vx*dt;p.y+=p.vy*dt;
+      p.vy+=280*dt;
+      p.life-=dt*1.4;
+      p.rot+=p.rotV;
+      if(p.life<=0)return;
+      alive=true;
+      ctx.save();
+      ctx.globalAlpha=Math.max(0,p.life);
+      ctx.font=`${p.size}px serif`;
+      ctx.translate(p.x,p.y);
+      ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillText(p.emoji,-p.size/2,-p.size/2);
+      ctx.restore();
+    });
+    if(alive)requestAnimationFrame(frame);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  requestAnimationFrame(frame);
+}
+
+/* ── 카드 플래시 ── */
+function flashCard(qid){
+  const card=document.querySelector(`[data-qid="${qid}"]`);
+  if(!card)return;
+  card.classList.remove('flash');
+  void card.offsetWidth;
+  card.classList.add('flash');
+  setTimeout(()=>card.classList.remove('flash'),600);
+}
+
+/* ── 리워드 해금 체크 ── */
+function checkNewlyUnlocked(prevBal,newBal){
+  const newly=R.filter(r=>r.cost>prevBal&&r.cost<=newBal);
+  if(newly.length>0){
+    setTimeout(()=>{
+      newly.forEach((r,i)=>setTimeout(()=>showUnlockToast(r.title),i*400));
+    },600);
+  }
+}
+
+/* ── MODAL ── */
+function openM(h){document.getElementById('mroot').innerHTML=h}
+function closeM(){document.getElementById('mroot').innerHTML='';window._cb=null;window._curCat=null;window._curEmoji=null}
+function memoM(title,sub,cb,ex=''){
+  openM(`<div class="modal-bg" onclick="if(event.target===this)closeM()">
+    <div class="modal">
+      <div class="modal-drag"></div>
+      <div class="modal-title">${esc(title)}</div>
+      <div class="modal-sub">${esc(sub)}</div>
+      <div class="form-group"><label class="form-label">메모</label>
+        <textarea class="form-textarea" id="mi" placeholder="오늘의 기록을 남겨보세요 (선택)">${esc(ex)}</textarea>
+      </div>
+      <div class="modal-btns">
+        <button class="btn btn-blue" style="flex:1" onclick="_mok()">확인</button>
+        <button class="btn btn-ghost" onclick="closeM()">취소</button>
+      </div>
+    </div>
+  </div>`);
+  window._cb=cb;setTimeout(()=>document.getElementById('mi')?.focus(),80);
+}
+window._mok=()=>{const v=(document.getElementById('mi')?.value||'').trim();if(window._cb)window._cb(v)};
+
+/* ── ACTIONS ── */
+function doComplete(id,btnEl){
+  const q=Q.find(x=>x.id===id);if(!q)return;
+  if(q.type==='단발'&&q.status==='완료'){toast('이미 완료된 퀘스트예요 ✓');return}
+  // 버튼 위치에서 파티클 발사
+  const rect=btnEl?btnEl.getBoundingClientRect():{left:window.innerWidth/2,top:window.innerHeight/2,width:0,height:0};
+  const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  memoM(q.type==='반복'?`🔁 ${q.title}`:`✅ ${q.title}`,`+${W(q.reward)} 적립`,memo=>{
+    const prevBal=bk().bal;
+    QL.push({id:uid(),questId:q.id,questTitleSnapshot:q.title,completedAt:new Date().toISOString(),earnedReward:q.reward,memo});
+    q.completedCount++;q.totalEarned+=q.reward;q.lastCompletedAt=new Date().toISOString();
+    if(q.type==='단발')q.status='완료';
+    saveAll();closeM();
+    // 💥 파티클 + 카드 플래시
+    explodeParticles(cx,cy);
+    setTimeout(()=>flashCard(q.id),100);
+    toast(q.type==='반복'?`🔁 클리어! +${W(q.reward)}`:`🎉 완료! +${W(q.reward)}`);
+    // 🔔 해금 체크
+    const newBal=bk().bal;
+    checkNewlyUnlocked(prevBal,newBal);
+    render();
+  });
+}
+function doBuy(id){
+  const r=R.find(x=>x.id===id);if(!r)return;
+  const b=bk();
+  if(b.bal<r.cost){toast(`💸 ${W(r.cost-b.bal)} 더 필요해요`);return}
+  memoM(`🛒 ${r.title}`,`-${W(r.cost)} 차감`,memo=>{
+    if(bk().bal<r.cost){toast('잔고 부족!');closeM();return}
+    PL.push({id:uid(),rewardId:r.id,rewardTitleSnapshot:r.title,purchasedAt:new Date().toISOString(),spentCost:r.cost,memo});
+    r.totalPurchasedCount++;r.totalSpent+=r.cost;
+    saveAll();closeM();toast(`🛒 구매 완료! -${W(r.cost)}`);render();
+  });
+}
+function editMemo(lid,type){
+  const l=type==='q'?QL.find(x=>x.id===lid):PL.find(x=>x.id===lid);if(!l)return;
+  memoM('메모 수정',l.questTitleSnapshot||l.rewardTitleSnapshot,m=>{l.memo=m;saveAll();closeM();render();},l.memo);
+}
+function deleteLog(lid,type){
+  if(type==='q'){
+    const l=QL.find(x=>x.id===lid);if(!l)return;
+    openM(`<div class="modal-bg" onclick="if(event.target===this)closeM()"><div class="modal" style="max-width:340px">
+      <div class="modal-drag"></div><div class="modal-title">로그 삭제</div>
+      <div class="modal-sub">잔고에서 <b style="color:var(--red)">${W(l.earnedReward)}</b>가 차감돼요.</div>
+      <div style="background:var(--card2);border-radius:var(--r-sm);padding:12px 14px;margin:14px 0">
+        <div style="font-size:13px;font-weight:600">${esc(l.questTitleSnapshot)}</div>
+        <div style="font-size:11px;color:var(--t3)">${FD(l.completedAt)} · +${W(l.earnedReward)}</div>
+      </div>
+      <div class="modal-btns"><button class="btn btn-red" style="flex:1" onclick="_delQL('${l.id}')">삭제하기</button><button class="btn btn-ghost" onclick="closeM()">취소</button></div>
+    </div></div>`);
+  }else{
+    const l=PL.find(x=>x.id===lid);if(!l)return;
+    openM(`<div class="modal-bg" onclick="if(event.target===this)closeM()"><div class="modal" style="max-width:340px">
+      <div class="modal-drag"></div><div class="modal-title">로그 삭제</div>
+      <div class="modal-sub">잔고에 <b style="color:var(--green)">${W(l.spentCost)}</b>가 돌아와요.</div>
+      <div style="background:var(--card2);border-radius:var(--r-sm);padding:12px 14px;margin:14px 0">
+        <div style="font-size:13px;font-weight:600">${esc(l.rewardTitleSnapshot)}</div>
+        <div style="font-size:11px;color:var(--t3)">${FD(l.purchasedAt)} · -${W(l.spentCost)}</div>
+      </div>
+      <div class="modal-btns"><button class="btn btn-red" style="flex:1" onclick="_delPL('${l.id}')">삭제하기</button><button class="btn btn-ghost" onclick="closeM()">취소</button></div>
+    </div></div>`);
+  }
+}
+window._delQL=lid=>{
+  const l=QL.find(x=>x.id===lid);if(!l)return;
+  const q=Q.find(x=>x.id===l.questId);
+  if(q){
+    q.completedCount=Math.max(0,q.completedCount-1);q.totalEarned=Math.max(0,q.totalEarned-l.earnedReward);
+    if(q.type==='단발'&&q.status==='완료'){q.status='진행중';q.lastCompletedAt=''}
+    else{const prev=QL.filter(x=>x.id!==lid&&x.questId===q.id).sort((a,b)=>new Date(b.completedAt)-new Date(a.completedAt));q.lastCompletedAt=prev[0]?.completedAt||''}
+  }
+  QL=QL.filter(x=>x.id!==lid);saveAll();closeM();toast('퀘스트 로그가 삭제됐어요');render();
+};
+window._delPL=lid=>{
+  const l=PL.find(x=>x.id===lid);if(!l)return;
+  const r=R.find(x=>x.id===l.rewardId);
+  if(r){r.totalPurchasedCount=Math.max(0,r.totalPurchasedCount-1);r.totalSpent=Math.max(0,r.totalSpent-l.spentCost)}
+  PL=PL.filter(x=>x.id!==lid);saveAll();closeM();toast('구매 로그가 삭제됐어요');render();
+};
+
+/* ── BANK RENDER ── */
+function renderBank(){
+  const b=bk();
+  const st=b.bal<0?'🔴 잔고 부족':b.bal<50000?'🟡 절약 모드':'🟢 구매 가능';
+  document.getElementById('bank-area').innerHTML=`<div class="bank-card">
+    <div class="bank-label">DQ 잔고</div>
+    <div class="bank-amount">${W(b.bal)}</div>
+    <div class="bank-status">${st}</div>
+    <div class="bank-stats-row">
+      <div class="bstat"><div class="bstat-val">+${W(b.me)}</div><div class="bstat-lbl">이번달 획득</div></div>
+      <div class="bstat"><div class="bstat-val">-${W(b.msp)}</div><div class="bstat-lbl">이번달 사용</div></div>
+      <div class="bstat" id="mnet-stat"><div class="bstat-val"></div><div class="bstat-lbl">순증가</div></div>
+    </div>
+  </div>`;
+  const mnetEl=document.querySelector('#mnet-stat .bstat-val');
+  if(mnetEl){mnetEl.textContent=(b.mnet>=0?'+':'')+W(b.mnet);mnetEl.style.color=b.mnet>=0?'#a7f3d0':'#fca5a5'}
+}
+
+/* ── CARDS ── */
+function qCard(q){
+  const done=q.status==='완료';
+  const btn=done
+    ?`<button class="btn btn-disabled" disabled onclick="event.stopPropagation()">완료 ✓</button>`
+    :q.type==='반복'
+      ?`<button class="btn btn-purple" onclick="event.stopPropagation();doComplete('${q.id}',this)">🔁 클리어</button>`
+      :`<button class="btn btn-blue" onclick="event.stopPropagation();doComplete('${q.id}',this)">✅ 완료</button>`;
+  const startBadge=q.status==='예정'&&q.startDate?`<span class="tag" style="background:var(--yellow-bg);color:var(--yellow)">📅 ${q.startDate} 시작</span>`:'';
+  return`<div class="qcard${done?' done':''} diff-${q.difficulty}" data-qid="${q.id}" onclick="questForm('${q.id}')">
+    <div class="qcard-head">
+      <div class="qcard-title">${CE[q.category]||'📌'} ${esc(q.title)}</div>
+      <div class="qcard-reward">${W(q.reward)}</div>
+    </div>
+    <div class="qcard-tags">
+      <span class="tag tag-cat">${esc(q.category)}</span>
+      <span class="tag tag-${q.difficulty}">${q.difficulty}등급</span>
+      <span class="tag ${q.type==='반복'?'tag-rep':'tag-sin'}">${q.type==='반복'?'🔄 반복':'1️⃣ 단발'}</span>
+      ${startBadge}
+    </div>
+    ${q.story?`<div class="qcard-story">${esc(q.story.substring(0,80))}${q.story.length>80?'...':''}</div>`:''}
+    <div class="qcard-foot">
+      <div class="qcard-meta"><b>${q.completedCount}회</b> 완료 · <b>${W(q.totalEarned)}</b> 획득${q.lastCompletedAt?`<br>마지막 ${FD(q.lastCompletedAt)}`:''} </div>
+      ${btn}
+    </div>
+    <div class="qcard-edit-hint">탭해서 수정 ✏️</div>
+  </div>`;
+}
+
+/* ── REWARD CATS ── */
+const RC_CATS=[
+  {cat:'food',label:'음식',emojis:['🍜','🍣','🍕','🍔','🥩','🍱','🍰','🧁','☕','🧃','🍾','🍷']},
+  {cat:'clothes',label:'옷/패션',emojis:['👔','👗','👟','👜','🕶️','🧥','👒','💍','⌚','🎒']},
+  {cat:'stuff',label:'갖고싶은것',emojis:['💻','📱','🎧','🎮','📷','🖥️','⌨️','🛋️','📚','🎹']},
+  {cat:'rest',label:'휴식',emojis:['🛁','🧖','💆','🛌','🎬','🎵','🎯','🕹️','🌿','🧘']},
+  {cat:'travel',label:'여행',emojis:['✈️','🏖️','🗼','🏔️','🚢','🏨','🗺️','🌏','🎡','🛫']},
+  {cat:'drink',label:'술자리',emojis:['🍺','🍻','🥂','🍸','🥃','🍶','🎊','🎉','🪄','🃏']},
+];
+function getREmoji(r){return r.remoji||'🎁'}
+function rCard(r,highlight=false){
+  const b=bk(),ok=b.bal>=r.cost;
+  const ico=getREmoji(r);
+  const catObj=RC_CATS.find(c=>c.cat===(r.rcat||''));
+  return`<div class="rcard rank-glow-${r.rank}${highlight?' newly-unlocked':''}" onclick="rewardForm('${r.id}')">
+    <div class="rcard-head">
+      <div class="rcard-title">${ico} ${esc(r.title)}${highlight?'<span class="unlock-badge">🔓 해금</span>':''}</div>
+      <span class="rank-tag rank-${r.rank}">Rank ${r.rank}</span>
+    </div>
+    ${catObj?`<div style="font-size:11px;color:var(--t3);margin-bottom:6px">${catObj.label}</div>`:''}
+    <div class="rcard-cost">${W(r.cost)}</div>
+    ${r.rewardModule?`<div class="rcard-desc">${esc(r.rewardModule)}</div>`:''}
+    ${r.rules?`<div class="rcard-rules">📌 ${esc(r.rules)}</div>`:''}
+    <div class="rcard-stats">구매 ${r.totalPurchasedCount}회 · 총 ${W(r.totalSpent)}</div>
+    ${ok
+      ?`<button class="btn btn-blue" onclick="event.stopPropagation();doBuy('${r.id}')">🛒 구매하기</button>`
+      :`<button class="btn btn-disabled" disabled onclick="event.stopPropagation()">잔고 부족</button><div class="insuf">⚠️ ${W(r.cost-b.bal)} 부족</div>`}
+    <div class="qcard-edit-hint">탭해서 수정 ✏️</div>
+  </div>`;
+}
+function logRow(l,type){
+  const isE=type==='q';
+  return`<div class="log-row">
+    <div class="log-ico ${isE?'log-ico-earn':'log-ico-spend'}">${isE?'⚔️':'🎁'}</div>
+    <div class="log-body">
+      <div class="log-name">${esc(l.questTitleSnapshot||l.rewardTitleSnapshot)}</div>
+      <div class="log-time">${FD(l.completedAt||l.purchasedAt)}</div>
+      ${l.memo?`<div class="log-memo-txt">📝 ${esc(l.memo)}</div>`:''}
+      <div style="display:flex;gap:8px;margin-top:3px">
+        <button class="log-memo-btn" onclick="editMemo('${l.id}','${type}')">${l.memo?'메모 수정':'+ 메모'}</button>
+        <button class="log-memo-btn" style="color:var(--red)" onclick="deleteLog('${l.id}','${type}')">삭제</button>
+      </div>
+    </div>
+    <div class="log-amt ${isE?'log-earn':'log-spend'}">${isE?'+':'-'}${W(l.earnedReward||l.spentCost)}</div>
+  </div>`;
+}
+
+/* ── PAGES ── */
+function renderDash(){
+  const b=bk();
+  const active=Q.filter(q=>q.status==='진행중'&&q.active);
+  const buyable=R.filter(r=>r.cost<=b.bal);
+  const rL=[...QL].reverse().slice(0,5);
+  const rP=[...PL].reverse().slice(0,3);
+  let h='';
+  h+=`<div class="sec-head"><span class="sec-title">⚔️ 진행중 퀘스트</span><button class="sec-more" onclick="go('quests')">${active.length}개 전체 →</button></div>`;
+  h+=active.length===0?`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">진행중인 퀘스트가 없어요</div></div>`:active.slice(0,3).map(qCard).join('');
+  h+=`<div class="sec-head"><span class="sec-title">🎁 구매 가능한 리워드</span><button class="sec-more" onclick="go('rewards')">${buyable.length}개 →</button></div>`;
+  h+=buyable.length===0?`<div class="empty"><div class="empty-ico">💸</div><div class="empty-txt">퀘스트를 완료해서 잔고를 채우세요!</div></div>`:buyable.slice(0,2).map(r=>rCard(r)).join('');
+  h+=`<div class="sec-head"><span class="sec-title">📋 최근 완료 로그</span></div>`;
+  h+=rL.length===0?`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">아직 완료한 퀘스트가 없어요</div></div>`:`<div class="log-card">${rL.map(l=>logRow(l,'q')).join('')}</div>`;
+  h+=`<div class="sec-head"><span class="sec-title">🛒 최근 구매 로그</span></div>`;
+  h+=rP.length===0?`<div class="empty"><div class="empty-ico">🛍️</div><div class="empty-txt">아직 구매 내역이 없어요</div></div>`:`<div class="log-card">${rP.map(l=>logRow(l,'p')).join('')}</div>`;
+  return h;
+}
+function renderQuests(){
+  const tabs=['진행중','반복','단발','완료','예정','전체'];
+  let f=Q;
+  if(qT==='진행중')f=Q.filter(q=>q.status==='진행중');
+  else if(qT==='반복')f=Q.filter(q=>q.type==='반복');
+  else if(qT==='단발')f=Q.filter(q=>q.type==='단발');
+  else if(qT==='완료')f=Q.filter(q=>q.status==='완료');
+  else if(qT==='예정')f=Q.filter(q=>q.status==='예정');
+  return`<div class="sub-tabs">${tabs.map(t=>`<button class="stab${qT===t?' on':''}" onclick="qT='${t}';render()">${t}</button>`).join('')}</div>`
+    +(f.length===0?`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">퀘스트가 없어요</div></div>`:f.map(qCard).join(''));
+}
+function renderRewards(){
+  const b=bk();
+  const tabs=['전체','구매가능','S','A','B','C'];
+  let f=R;
+  if(rT==='구매가능')f=R.filter(r=>r.cost<=b.bal);
+  else if(['S','A','B','C'].includes(rT))f=R.filter(r=>r.rank===rT);
+  return`<div class="sub-tabs">${tabs.map(t=>`<button class="stab${rT===t?' on':''}" onclick="rT='${t}';render()">${t}</button>`).join('')}</div>`
+    +(f.length===0?`<div class="empty"><div class="empty-ico">🎁</div><div class="empty-txt">리워드가 없어요</div></div>`:f.map(r=>rCard(r)).join(''));
+}
+function renderLogs(){
+  const now=new Date();
+  function flt(items,dk){
+    if(lT==='오늘'){const s=new Date(now.getFullYear(),now.getMonth(),now.getDate());return items.filter(i=>new Date(i[dk])>=s)}
+    if(lT==='이번주'){const s=new Date(now-6*86400000);return items.filter(i=>new Date(i[dk])>=s)}
+    if(lT==='이번달'){const s=new Date(now.getFullYear(),now.getMonth(),1);return items.filter(i=>new Date(i[dk])>=s)}
+    return items;
+  }
+  const ql=flt([...QL].reverse(),'completedAt');
+  const pl=flt([...PL].reverse(),'purchasedAt');
+  let h=`<div class="sub-tabs">${['오늘','이번주','이번달','전체'].map(t=>`<button class="stab${lT===t?' on':''}" onclick="lT='${t}';render()">${t}</button>`).join('')}</div>`;
+  h+=`<div class="sub-tabs">${[{k:'quest',l:'⚔️ 퀘스트 로그'},{k:'purchase',l:'🛒 구매 로그'}].map(t=>`<button class="stab${lTy===t.k?' on':''}" onclick="lTy='${t.k}';render()">${t.l}</button>`).join('')}</div>`;
+  if(lTy==='quest')h+=ql.length===0?`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">로그가 없어요</div></div>`:`<div class="log-card">${ql.map(l=>logRow(l,'q')).join('')}</div>`;
+  else h+=pl.length===0?`<div class="empty"><div class="empty-ico">🛍️</div><div class="empty-txt">로그가 없어요</div></div>`:`<div class="log-card">${pl.map(l=>logRow(l,'p')).join('')}</div>`;
+  return h;
+}
+function renderStats(){
+  const b=bk();
+  const cats=['몸','마음','스킬','일/프로젝트','자산/돈','생활/환경'];
+  const ce={};cats.forEach(c=>ce[c]=0);
+  QL.forEach(l=>{const q=Q.find(q=>q.id===l.questId);if(q&&ce[q.category]!==undefined)ce[q.category]+=l.earnedReward});
+  const maxCE=Math.max(...Object.values(ce),1);
+  const repC=QL.filter(l=>{const q=Q.find(q=>q.id===l.questId);return q&&q.type==='반복'}).length;
+  const sinC=Q.filter(q=>q.type==='단발'&&q.status==='완료').length;
+  const t5q=[...Q].sort((a,b2)=>b2.completedCount-a.completedCount).slice(0,5).filter(q=>q.completedCount>0);
+  const rb={};PL.forEach(l=>{rb[l.rewardTitleSnapshot]=(rb[l.rewardTitleSnapshot]||0)+1});
+  const t5b=Object.entries(rb).sort((a,b2)=>b2[1]-a[1]).slice(0,5);
+  let h=`<div class="stat-grid">
+    <div class="stat-card"><div class="stat-num">${W(b.bal)}</div><div class="stat-lbl">💰 현재 잔고</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--green)">${W(b.te)}</div><div class="stat-lbl">📈 총 획득</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:var(--red)">${W(b.ts)}</div><div class="stat-lbl">📉 총 사용</div></div>
+    <div class="stat-card"><div class="stat-num">${QL.length}</div><div class="stat-lbl">⚔️ 총 완료</div></div>
+    <div class="stat-card"><div class="stat-num">${repC}</div><div class="stat-lbl">🔁 반복 완료</div></div>
+    <div class="stat-card"><div class="stat-num">${sinC}</div><div class="stat-lbl">✅ 단발 완료</div></div>
+  </div>`;
+  h+=`<div class="sec-head"><span class="sec-title">📊 카테고리별 획득 보상</span></div><div class="bar-list">`;
+  cats.forEach(c=>{h+=`<div class="bar-row"><div class="bar-lbl">${CE[c]||''} ${c}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(ce[c]/maxCE*100)}%"></div></div><div class="bar-val">${W(ce[c])}</div></div>`});
+  h+=`</div>`;
+  if(t5q.length>0){h+=`<div class="sec-head"><span class="sec-title">🏆 완료 TOP 5</span></div><div class="top-list">`;t5q.forEach((q,i)=>{h+=`<div class="log-row"><div class="log-ico" style="background:var(--yellow-bg);font-size:14px">${['🥇','🥈','🥉','4️⃣','5️⃣'][i]}</div><div class="log-body"><div class="log-name">${esc(q.title)}</div><div class="log-time">${q.type} · ${q.category}</div></div><div class="log-amt log-earn">${q.completedCount}회</div></div>`});h+=`</div>`}
+  if(t5b.length>0){h+=`<div class="sec-head"><span class="sec-title">🛒 구매 TOP 5</span></div><div class="top-list">`;t5b.forEach(([n,c],i)=>{h+=`<div class="log-row"><div class="log-ico log-ico-spend">${['🥇','🥈','🥉','4️⃣','5️⃣'][i]}</div><div class="log-body"><div class="log-name">${esc(n)}</div></div><div class="log-amt log-spend">${c}회</div></div>`});h+=`</div>`}
+  return h;
+}
+
+/* ── QUEST FORM ── */
+function questForm(eid=null){
+  const q=eid?Q.find(x=>x.id===eid):{id:uid(),title:'',type:'반복',reward:5000,category:'몸',difficulty:'B',status:'진행중',active:true,dueDate:'',condition:'',story:'',note:'',completedCount:0,totalEarned:0,lastCompletedAt:'',startDate:'',createdAt:new Date().toISOString()};
+  const tips={S:'100,000원 이상',A:'20,000~100,000원',B:'5,000~20,000원',C:'1,000~5,000원'};
+  openM(`<div class="modal-bg" onclick="if(event.target===this)closeM()"><div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">${eid?'✏️ 퀘스트 수정':'⚔️ 새 퀘스트'}</div>
+    <div class="form-group"><label class="form-label">퀘스트명 *</label><input class="form-input" id="qt" value="${esc(q.title)}" placeholder="퀘스트 이름"></div>
+    <div class="g2">
+      <div class="form-group"><label class="form-label">유형</label><select class="form-select" id="qy"><option ${q.type==='반복'?'selected':''}>반복</option><option ${q.type==='단발'?'selected':''}>단발</option></select></div>
+      <div class="form-group"><label class="form-label">카테고리</label><select class="form-select" id="qc">${['몸','마음','스킬','일/프로젝트','자산/돈','생활/환경'].map(c=>`<option ${q.category===c?'selected':''}>${c}</option>`).join('')}</select></div>
+    </div>
+    <div class="g2">
+      <div class="form-group"><label class="form-label">난이도</label><select class="form-select" id="qd" onchange="document.getElementById('qtip').textContent=(${JSON.stringify(tips)})[this.value]">${['S','A','B','C'].map(d=>`<option ${q.difficulty===d?'selected':''}>${d}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">상태</label><select class="form-select" id="qs" onchange="document.getElementById('sdwrap').style.display=this.value==='예정'?'block':'none'">${['예정','진행중','완료'].map(s=>`<option ${q.status===s?'selected':''}>${s}</option>`).join('')}</select></div>
+    </div>
+    <div id="sdwrap" style="display:${q.status==='예정'?'block':'none'}">
+      <div class="form-group"><label class="form-label">📅 진행 시작일</label><input class="form-input" id="qsd" type="date" value="${q.startDate||''}"></div>
+    </div>
+    <div class="form-group"><label class="form-label">보상금 (₩)</label><input class="form-input" id="qr" type="number" value="${q.reward}" min="0"><div class="form-tip" id="qtip">추천: ${tips[q.difficulty]}</div></div>
+    <div class="form-group"><label class="form-label">달성 조건</label><input class="form-input" id="qco" value="${esc(q.condition)}" placeholder="달성 조건"></div>
+    <div class="form-group"><label class="form-label">스토리</label><textarea class="form-textarea" id="qst">${esc(q.story)}</textarea></div>
+    <div class="modal-btns">
+      <button class="btn btn-blue" style="flex:1" onclick="_sqf('${q.id}',${!!eid})">저장</button>
+      ${eid?`<button class="btn btn-red" onclick="_dqf('${q.id}')">삭제</button>`:''}
+      <button class="btn btn-ghost" onclick="closeM()">취소</button>
+    </div>
+  </div></div>`);
+}
+window._sqf=(id,isE)=>{
+  const t=document.getElementById('qt').value.trim();
+  if(!t){toast('퀘스트명을 입력해주세요');return}
+  const status=document.getElementById('qs').value;
+  const d={id,title:t,type:document.getElementById('qy').value,reward:parseInt(document.getElementById('qr').value)||0,category:document.getElementById('qc').value,difficulty:document.getElementById('qd').value,status,active:true,condition:document.getElementById('qco').value,story:document.getElementById('qst').value,note:'',dueDate:'',startDate:status==='예정'?(document.getElementById('qsd')?.value||''):''};
+  if(isE){const i=Q.findIndex(q=>q.id===id);if(i>-1)Q[i]={...Q[i],...d}}
+  else{d.completedCount=0;d.totalEarned=0;d.lastCompletedAt='';d.createdAt=new Date().toISOString();Q.push(d)}
+  saveAll();closeM();toast(isE?'퀘스트가 수정됐어요 ✓':'새 퀘스트 추가! ⚔️');render();
+};
+window._dqf=id=>{if(!confirm('삭제할까요?'))return;Q=Q.filter(q=>q.id!==id);saveAll();closeM();toast('삭제됐어요');render()};
+
+/* ── REWARD FORM ── */
+function rewardForm(eid=null){
+  const r=eid?R.find(x=>x.id===eid):{id:uid(),title:'',cost:10000,rank:'B',rewardModule:'',rules:'',rcat:'food',remoji:'🍜',totalPurchasedCount:0,totalSpent:0,createdAt:new Date().toISOString()};
+  const selCatKey=r.rcat||'food';
+  const catBtns=RC_CATS.map(c=>`<div class="emoji-cat${c.cat===selCatKey?' sel':''}" id="ecat-${c.cat}" onclick="_selCat('${c.cat}')">​<span class="ec-ico">${c.emojis[0]}</span><span class="ec-lbl">${c.label}</span></div>`).join('');
+  const selCat=RC_CATS.find(c=>c.cat===selCatKey)||RC_CATS[0];
+  const chips=selCat.emojis.map(e=>`<button class="emoji-chip${r.remoji===e?' sel':''}" onclick="_selEmoji('${e}')" type="button">${e}</button>`).join('');
+  openM(`<div class="modal-bg" onclick="if(event.target===this)closeM()"><div class="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-title">${eid?'✏️ 리워드 수정':'🎁 새 리워드'}</div>
+    <div class="form-group"><label class="form-label">카테고리</label><div class="emoji-picker" id="ecat-grid">${catBtns}</div></div>
+    <div class="form-group"><label class="form-label">이모티콘</label>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><span style="font-size:32px;line-height:1" id="sel-emoji-preview">${r.remoji||selCat.emojis[0]}</span><span style="font-size:12px;color:var(--t3)">선택된 이모티콘</span></div>
+      <div class="emoji-chips" id="emoji-chip-wrap">${chips}</div>
+    </div>
+    <div class="form-group"><label class="form-label">리워드명 *</label><input class="form-input" id="rt" value="${esc(r.title)}" placeholder="리워드 이름"></div>
+    <div class="g2">
+      <div class="form-group"><label class="form-label">비용 (₩)</label><input class="form-input" id="rc" type="number" value="${r.cost}" min="0"></div>
+      <div class="form-group"><label class="form-label">Rank</label><select class="form-select" id="rr">${['S','A','B','C'].map(k=>`<option ${r.rank===k?'selected':''}>${k}</option>`).join('')}</select></div>
+    </div>
+    <div class="form-group"><label class="form-label">설명</label><input class="form-input" id="rm" value="${esc(r.rewardModule)}" placeholder="어떤 보상인가요?"></div>
+    <div class="form-group"><label class="form-label">구매 규칙</label><textarea class="form-textarea" id="rru">${esc(r.rules)}</textarea></div>
+    <div class="modal-btns">
+      <button class="btn btn-blue" style="flex:1" onclick="_srf('${r.id}',${!!eid})">저장</button>
+      ${eid?`<button class="btn btn-red" onclick="_drf('${r.id}')">삭제</button>`:''}
+      <button class="btn btn-ghost" onclick="closeM()">취소</button>
+    </div>
+  </div></div>`);
+  window._curCat=selCatKey;window._curEmoji=r.remoji||selCat.emojis[0];
+}
+window._selCat=cat=>{
+  window._curCat=cat;
+  const c=RC_CATS.find(x=>x.cat===cat);if(!c)return;
+  document.querySelectorAll('.emoji-cat').forEach(el=>el.classList.remove('sel'));
+  document.getElementById('ecat-'+cat)?.classList.add('sel');
+  const wrap=document.getElementById('emoji-chip-wrap');
+  if(wrap)wrap.innerHTML=c.emojis.map(e=>`<button class="emoji-chip" onclick="_selEmoji('${e}')" type="button">${e}</button>`).join('');
+  window._selEmoji(c.emojis[0]);
+};
+window._selEmoji=emoji=>{
+  window._curEmoji=emoji;
+  const prev=document.getElementById('sel-emoji-preview');
+  if(prev)prev.textContent=emoji;
+  document.querySelectorAll('.emoji-chip').forEach(el=>el.classList.toggle('sel',el.textContent===emoji));
+};
+window._srf=(id,isE)=>{
+  const t=document.getElementById('rt').value.trim();
+  if(!t){toast('리워드명을 입력해주세요');return}
+  const d={id,title:t,cost:parseInt(document.getElementById('rc').value)||0,rank:document.getElementById('rr').value,rewardModule:document.getElementById('rm').value,rules:document.getElementById('rru').value,rcat:window._curCat||'food',remoji:window._curEmoji||'🎁'};
+  if(isE){const i=R.findIndex(r=>r.id===id);if(i>-1)R[i]={...R[i],...d}}
+  else{d.totalPurchasedCount=0;d.totalSpent=0;d.createdAt=new Date().toISOString();R.push(d)}
+  saveAll();closeM();toast(isE?'리워드가 수정됐어요 ✓':'새 리워드 추가! 🎁');render();
+};
+window._drf=id=>{if(!confirm('삭제할까요?'))return;R=R.filter(r=>r.id!==id);saveAll();closeM();toast('삭제됐어요');render()};
+
+/* ── NAV ── */
+const PC={dash:'대시보드',quests:'⚔️ 퀘스트',rewards:'🎁 리워드 마켓',logs:'📋 로그',stats:'📊 통계'};
+function go(p){
+  pg=p;
+  document.querySelectorAll('.bnav-btn').forEach(b=>b.classList.remove('on'));
+  document.getElementById('bn-'+p)?.classList.add('on');
+  document.getElementById('fab').className='fab'+((p==='quests'||p==='rewards')?' show':'');
+  render();
+}
+function onFab(){pg==='quests'?questForm():pg==='rewards'?rewardForm():null}
+
+/* ── SCHEDULED ── */
+function checkScheduled(){
+  const today=new Date();today.setHours(0,0,0,0);
+  let changed=false;
+  Q.forEach(q=>{
+    if(q.status==='예정'&&q.startDate){
+      const sd=new Date(q.startDate);sd.setHours(0,0,0,0);
+      if(sd<=today){q.status='진행중';q.startDate='';changed=true;toast(`📅 "${q.title}" 퀘스트 시작!`)}
+    }
+  });
+  if(changed)saveAll();
+}
+
+/* ── RENDER ── */
+function render(){
+  checkScheduled();
+  document.getElementById('page-title').textContent=PC[pg];
+  renderBank();
+  const m=document.getElementById('main');
+  if(pg==='dash')m.innerHTML=renderDash();
+  else if(pg==='quests')m.innerHTML=renderQuests();
+  else if(pg==='rewards')m.innerHTML=renderRewards();
+  else if(pg==='logs')m.innerHTML=renderLogs();
+  else if(pg==='stats')m.innerHTML=renderStats();
+}
+render();
+setInterval(()=>{checkScheduled();renderBank();},60000);
+</script>
+</body>
+</html>
