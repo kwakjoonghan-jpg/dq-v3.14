@@ -73,6 +73,7 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .bstat+.bstat{border-left:1px solid rgba(255,255,255,.12)}
 .bstat-val{font-size:13px;font-weight:700;color:#fff}
 .bstat-lbl{font-size:10px;font-weight:500;color:rgba(255,255,255,.5);margin-top:1px}
+
 /* 플로팅 */
 .float-text{position:fixed;pointer-events:none;z-index:9998;font-size:18px;font-weight:800;animation:floatUp .9s ease-out forwards}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-60px) scale(1.2)}}
@@ -82,6 +83,7 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .sec-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 9px}
 .sec-title{font-size:13px;font-weight:700;color:var(--t2);letter-spacing:.04em}
 .sec-more{font-size:12px;font-weight:600;color:var(--blue);background:none;border:none;cursor:pointer;font-family:inherit;padding:0}
+
 /* QUEST CARD */
 .qcard{background:var(--card);border-radius:var(--r);padding:14px;margin-bottom:8px;border:1px solid var(--line);cursor:pointer;transition:border-color .2s,box-shadow .2s;position:relative;overflow:hidden}
 .qcard:active{background:var(--card2)}
@@ -171,9 +173,9 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .log-spend{color:var(--red)}
 /* STAT */
 .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
-.stat-card{background:var(--card);border-radius:var(--r);padding:14px;border:1px solid var(--line)}
-.stat-num{font-size:18px;font-weight:800;color:var(--t1);letter-spacing:-.3px}
-.stat-lbl{font-size:11px;color:var(--t3);margin-top:3px;font-weight:500}
+.stat-card{background:var(--card);border-radius:var(--r);padding:14px;border:1px solid var(--line);text-align:center;}
+.stat-num{font-size:16px;font-weight:800;color:var(--t1);letter-spacing:-.3px}
+.stat-lbl{font-size:11px;color:var(--t3);margin-bottom:4px;font-weight:600}
 .bar-list{background:var(--card);border-radius:var(--r);padding:12px 14px;border:1px solid var(--line);margin-bottom:8px}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .bar-row:last-child{margin-bottom:0}
@@ -201,18 +203,12 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .cal-dot-log{background:var(--green)}
 .cal-dot-quest{background:var(--blue)}
 .cal-dot-overdue{background:var(--red)}
-/* 캘린더 기간 표시: 퀘스트별 컬러 라인 */
-.cal-cell{overflow:hidden}
+/* 캘린더 기간 표시 */
+.cal-cell.range-start{background:rgba(59,130,246,.2);border-radius:6px 0 0 6px}
+.cal-cell.range-mid{background:rgba(59,130,246,.1);border-radius:0}
+.cal-cell.range-end{background:rgba(59,130,246,.2);border-radius:0 6px 6px 0}
+.cal-cell.range-only{background:rgba(59,130,246,.2);border-radius:6px}
 .cal-cell.deadline{border:1px solid var(--red);}
-.cal-cell.selected{outline:1px solid rgba(255,255,255,.22);outline-offset:-1px;background:rgba(255,255,255,.04)}
-.cal-range-stack{position:absolute;left:0;right:0;bottom:4px;display:flex;flex-direction:column;gap:2px;pointer-events:none;z-index:0}
-.cal-range-bar{height:5px;opacity:.72;box-shadow:0 0 6px rgba(255,255,255,.08)}
-.cal-range-bar.range-start{margin-left:7px;border-radius:5px 0 0 5px}
-.cal-range-bar.range-mid{border-radius:0}
-.cal-range-bar.range-end{margin-right:7px;border-radius:0 5px 5px 0}
-.cal-range-bar.range-only{margin:0 7px;border-radius:5px}
-.cal-more{font-size:9px;color:var(--t3);text-align:center;line-height:1;margin-top:-1px}
-.cal-date,.cal-dot-wrap{position:relative;z-index:2}
 /* 캘린더 범례 */
 .cal-legend{display:flex;gap:12px;padding:0 16px 12px;flex-wrap:wrap}
 .cal-legend-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--t3)}
@@ -348,11 +344,9 @@ function getLevel(totalEarned){
   const MAX_EARN = 100000000; // 1억원
   const MAX_LV = 100;
   
-  // 누적 금액에 따른 제곱근 비례 레벨 (1~100)
   let lv = Math.floor(1 + 99 * Math.pow(Math.min(totalEarned, MAX_EARN) / MAX_EARN, 0.5));
   if(lv > MAX_LV) lv = MAX_LV;
   
-  // 특정 레벨의 최소 필요 금액 계산 공식 역산
   const getReq = (l) => l <= 1 ? 0 : Math.floor(MAX_EARN * Math.pow((l - 1) / 99, 2));
   
   const curReq = getReq(lv);
@@ -380,7 +374,7 @@ function getLevel(totalEarned){
   return { level: lv, title, emoji, pct, next: nextObj, curReq, nextReq, totalEarned };
 }
 
-/* ══ STORAGE ══ */
+/* ══ STORAGE & GITHUB GIST ══ */
 const SK={Q:'dq_q3',QL:'dq_ql3',R:'dq_r3',PL:'dq_pl3'};
 const SQ=[{"id":"q_001","title":"완전 실행의 주간","type":"반복","reward":100000,"deadline":"2026-04-26","difficulty":"B","category":"mind","status":"예정","active":false,"isCompleted":false,"condition":"다음 주 7일 동안 기존에 세운 모든 마이루틴(운동, 학습 등)을 1회도 빠짐없이 100% 이행\n* 회식 등으로 이행 불가 시 주말에 해당 활동 완료","story":"루틴은 단순히 반복되는 행위가 아니라, 당신이라는 거대한 직물을 짜는 한 올 한 올의 실타래입니다.\n이 퀘스트는 당신이 스스로 정한 모든 실타래를 한 치의 오차 없이 연결하여, 완벽하게 조율된 당신의 한 주를 완성하는 여정입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-04-26","createdAt":"2026-05-03T00:00:00"},{"id":"q_002","title":"이지 퀘스트: 피아노 소곡집 1","type":"단발","reward":100000,"deadline":"2026-04-30","difficulty":"C","category":"skill","status":"진행중","active":false,"isCompleted":false,"condition":"'피아노소곡집1' 수록곡 중 순서대로 5곡을 악보 중단 없이, 처음부터 끝까지 자연스러운 흐름으로 완주 (암보 불필요, 악보 리딩 허용).\n\n*해당 퀘스트는 달성 시 다음 5개 곡으로 추가 퀘스트 도전 가능","story":"단순히 악보 위의 콩나물을 읽어내는 행위가 아닙니다. 이 퀘스트는 당신의 손끝을 통해 잉크로 박제된 악보 속 멜로디에 생명력을 불어넣는 과정입니다. 건반을 누르는 매 순간, 당신은 현실의 소음을 잠재우고 환상의 세계로 향하는 문을 직접 열게 될 것입니다. 다섯 곡의 완주는 곧 당신의 감각이 마법의 언어를 습득했음을 증명하는 서막입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-04-30","createdAt":"2026-05-03T00:00:00"},{"id":"q_003","title":"계산된 일탈🃏","type":"반복","reward":50000,"deadline":null,"difficulty":"C","category":"life_environment","status":"완료","active":false,"isCompleted":true,"condition":"핵심 과업 3종 격파: 술자리 이동 전(또는 퇴근 전)까지 아래 항목을 모두 완수.\n1. 재무관리사 공부 50분: 집중 모드로 1회차 세션 완료.\n2. 스픽 10분: 오늘의 학습 및 스피킹 훈련 완료.\n3. 헬스 다녀오기: 웨이트 또는 유산소 트레이닝 세션 종료.","story":"가장 무거운 과업들을 해가 지기 전에 해치우는 것은 아무나 할 수 있는 일이 아닙니다.\n재무의 언어를 깨우치고, 외국어의 감각을 깨우며, 육체의 한계까지 몰아붙인 자만이 '취할 자격'을 얻습니다.\n오늘 당신의 술자리는 단순한 유희가 아닙니다. 폭발적인 집중력으로 하루를 압축해버린 자가 누리는 당당한 승전 파티가 될 것입니다.","note":"","completedCount":1,"totalEarned":30000,"lastCompletedAt":"2026-05-03T00:00:00","startDate":"","dueDate":"","createdAt":"2026-05-03T00:00:00"},{"id":"q_004","title":"첫 번째 현금 흐름","type":"단발","reward":100000,"deadline":"2026-04-30","difficulty":"B","category":"money_asset","status":"진행중","active":false,"isCompleted":false,"condition":"10만 원 이상의 월 추가 수익 발생 (애드센스, 디지털 판매, 자동수익, 프리랜스 등 모든 형태 포함)","story":"진정한 경제적 독립은 월급 통장 밖에서 당신의 노력이 현실의 가치로 환산될 때 시작됩니다.\n이 퀘스트는 당신이 구축한 작은 시스템이 자율적으로 첫 번째 수익을 창출하는 순간을 기념합니다.\n10만 원이라는 숫자는 단순한 금액이 아니라, 당신의 아이디어와 노력이 시장에서 인정받았음을 증명하는 첫 번째 증표가 될 것입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-04-30","createdAt":"2026-05-03T00:00:00"},{"id":"q_005","title":"스테이 헬시 (Stay Healthy)","type":"반복","reward":150000,"deadline":"2026-05-19","difficulty":"C","category":"body","status":"진행중","active":false,"isCompleted":false,"condition":"• 주 5회 이상 헬스장 방문 및 운동 수행 (최소 40분 이상 체류)\n• 4주(한 달)간 해당 루틴을 한 번의 실패 없이 유지","story":"건강을 유지한다는 것은 단순히 질병이 없는 상태가 아니라, 내 몸의 주도권을 온전히 쥐고 있다는 선언입니다. 매주 5번, 체육관의 문을 여는 행위는 나태함이라는 중력을 거스르는 고귀한 저항입니다. 이 반복되는 움직임 속에서 당신은 단순한 운동인이 아닌, 스스로의 삶을 조율하는 설계자로 거듭납니다. 땀방울이 바닥에 닿는 순간, 당신의 세계는 조금 더 단단해집니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-05-19","createdAt":"2026-05-03T00:00:00"},{"id":"q_006","title":"투자의 언어를 깨닫다","type":"단발","reward":500000,"deadline":"2026-09-13","difficulty":"A","category":"skill","status":"예정","active":false,"isCompleted":false,"condition":"재무위험관리사 자격증 합격","story":"투자는 단순한 돈의 증식이 아니라, 경제와 시장의 흐름을 읽는 새로운 언어를 배우는 과정입니다.\n이 퀘스트는 당신이 금융 지식을 습득하고, 그 언어로 세상과 소통할 수 있음을 증명하는 서사입니다.\n재무위험관리사 자격증 합격은 단순한 시험 통과를 넘어, 당신이 경제적 가치 창출의 주체로서 깨어났음을 선언하는 일입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"2026-09-13","createdAt":"2026-05-03T00:00:00"},{"id":"q_007","title":"프로젝트 74","type":"단발","reward":500000,"deadline":"2026-09-19","difficulty":"A","category":"body","status":"진행중","active":false,"isCompleted":false,"condition":"체중 74.0kg 이하 달성 (공복 기준, 동일 체중계 측정)","story":"74.0kg라는 숫자는 단순한 체중계의 수치를 넘어, 당신의 자기 통제력과 의지력이 완벽하게 조율된 결과입니다.\n이 퀘스트는 무의식적 습관을 의식적 노력으로 바꾸어, 당신의 신체를 스스로의 통제하에 두는 과정입니다.\n오직 당신만이 이룰 수 있는 이 경계를 넘어섬으로써, 당신은 스스로에게 약속했던 새로운 몸을 완성하게 될 것입니다.","note":"","completedCount":1,"totalEarned":500000,"lastCompletedAt":"2026-05-03T00:00:00","startDate":"","dueDate":"2026-09-19","createdAt":"2026-05-03T00:00:00"},{"id":"q_008","title":"한 번의 흐름으로 완주하라","type":"단발","reward":300000,"deadline":null,"difficulty":"A","category":"skill","status":"완료","active":false,"isCompleted":true,"condition":"'Everything Happens to Me'를 처음부터 끝까지 한 번도 틀리지 않고 완주","story":"수많은 연습과 도전 속에서 수없이 멈추고 다시 시작했던 시간.\n이 퀘스트는 그 모든 과정을 지나, 처음부터 끝까지 단 한 번의 끊김 없이 완벽하게 곡을 연주하는 순간을 기록합니다.\n'한 번의 흐름으로 완주하라'는 명칭은 단순한 성공을 넘어, 집중력과 기술, 그리고 감정적 몰입이 하나로 통합되었음을 증명하는 서사입니다.\n이 여정의 끝에서, 당신은 비로소 곡의 진정한 주인이 될 것입니다.","note":"","completedCount":0,"totalEarned":0,"lastCompletedAt":"","startDate":"","dueDate":"","createdAt":"2026-05-03T00:00:00"}];
 const SR=[{"id":"r_001","title":"무신사 / 29cm 머니 충전 50K","cost":50000,"rank":"C","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_002","title":"무신사 / 29cm 머니 충전 30K","cost":30000,"rank":"C","isPurchased":true,"rewardModule":"","rules":"","totalPurchasedCount":1,"totalSpent":30000,"createdAt":"2026-05-03T00:00:00"},{"id":"r_003","title":"젠틀몬스터 안경","cost":250000,"rank":"B","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_004","title":"아크네 목도리","cost":200000,"rank":"B","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_005","title":"무신사 / 29cm 머니 충전 100K","cost":100000,"rank":"C","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_006","title":"정장","cost":300000,"rank":"B","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_007","title":"다연이 디올 스카프","cost":500000,"rank":"A","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_008","title":"허먼밀러 뉴에어론","cost":1500000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_009","title":"크롬하츠 부바a (안경)","cost":2000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_010","title":"르메르 크루아상 라지 (가방)","cost":3000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_011","title":"보테가 디아고 라지 (가방)","cost":4000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_012","title":"🔴 Mythic 리워드","cost":10000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_013","title":"🟠 Immortal 리워드","cost":100000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"},{"id":"r_014","title":"⚜️ Transcendent 리워드","cost":1000000000,"rank":"S","isPurchased":false,"rewardModule":"","rules":"","totalPurchasedCount":0,"totalSpent":0,"createdAt":"2026-05-03T00:00:00"}];
@@ -391,6 +385,10 @@ function ld(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}ca
 function sv(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch{}}
 
 let Q=ld(SK.Q,null),QL=ld(SK.QL,null),R=ld(SK.R,null),PL=ld(SK.PL,null);
+let githubPAT = ld('dq_github_pat', '');
+let gistID = ld('dq_gist_id', '');
+let lastSync = ld('dq_last_sync', '');
+
 if(Q===null){Q=JSON.parse(JSON.stringify(SQ));sv(SK.Q,Q)}
 if(QL===null){QL=JSON.parse(JSON.stringify(SQL));sv(SK.QL,QL)}
 if(R===null){R=JSON.parse(JSON.stringify(SR));sv(SK.R,R)}
@@ -399,7 +397,120 @@ if(!localStorage.getItem('dq_cat_migrated')){
   Q=Q.map(q=>{const c=migrateCat(q.category);return{...q,category:c}});
   sv(SK.Q,Q);localStorage.setItem('dq_cat_migrated','1');
 }
-function saveAll(){sv(SK.Q,Q);sv(SK.QL,QL);sv(SK.R,R);sv(SK.PL,PL);sv('dq_last_saved',new Date().toISOString())}
+
+function saveAll(){
+  sv(SK.Q,Q);sv(SK.QL,QL);sv(SK.R,R);sv(SK.PL,PL);sv('dq_last_saved',new Date().toISOString());
+  autoSyncGist();
+}
+
+/* ══ GITHUB GIST SYNC ══ */
+let _syncTimer = null;
+function autoSyncGist() {
+  if (!githubPAT) return;
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(() => {
+    syncToGist(false);
+  }, 3000); // 3초 뒤 자동 백업 (API 리밋 방지)
+}
+
+async function syncToGist(isManual = false) {
+  if (!githubPAT) {
+    if (isManual) toast('GitHub Token을 먼저 설정해주세요.', 'var(--red)');
+    return;
+  }
+  
+  if (isManual) toast('☁️ 클라우드에 백업하는 중...');
+  
+  const data = { quests: Q, questLogs: QL, rewards: R, purchaseLogs: PL, exportedAt: new Date().toISOString() };
+  const content = JSON.stringify(data, null, 2);
+  const body = {
+    description: "Dopamin Quest Backup",
+    files: { "dq-backup.json": { content: content } }
+  };
+  
+  try {
+    let url = 'https://api.github.com/gists';
+    let method = 'POST';
+    if (gistID) {
+      url += '/' + gistID;
+      method = 'PATCH';
+    }
+    
+    const res = await fetch(url, {
+      method: method,
+      headers: { 'Accept': 'application/vnd.github.v3+json', 'Authorization': `token ${githubPAT}` },
+      body: JSON.stringify(body)
+    });
+    
+    if (!res.ok) throw new Error('API Error');
+    const resData = await res.json();
+    
+    if (!gistID) {
+      gistID = resData.id;
+      sv('dq_gist_id', gistID);
+    }
+    
+    lastSync = new Date().toISOString();
+    sv('dq_last_sync', lastSync);
+    
+    if (isManual) {
+      toast('☁️ 클라우드 수동 백업 완료!');
+      render();
+    }
+  } catch (e) {
+    console.error(e);
+    if (isManual) toast('☁️ 클라우드 백업 실패 (토큰 확인)', 'var(--red)');
+  }
+}
+
+async function fetchFromGist() {
+  if (!githubPAT || !gistID) {
+    toast('GitHub Token과 Gist ID가 필요합니다.', 'var(--red)');
+    return;
+  }
+  toast('☁️ 클라우드에서 데이터 가져오는 중...');
+  try {
+    const res = await fetch(`https://api.github.com/gists/${gistID}`, {
+      headers: { 'Authorization': `token ${githubPAT}` }
+    });
+    if (!res.ok) throw new Error('API Error');
+    const resData = await res.json();
+    const file = resData.files["dq-backup.json"];
+    if (!file) throw new Error('File not found');
+    
+    const d = JSON.parse(file.content);
+    if(!d.quests || !d.rewards){ throw new Error('Invalid format'); }
+    
+    if(!confirm('클라우드 데이터로 복원할까요?\n(현재 기기의 데이터가 모두 덮어씌워집니다)')) return;
+    
+    Q = d.quests; QL = d.questLogs || []; R = d.rewards; PL = d.purchaseLogs || [];
+    
+    // 복원 시에는 autoSync가 발동되지 않게 직접 로컬에만 저장
+    sv(SK.Q,Q); sv(SK.QL,QL); sv(SK.R,R); sv(SK.PL,PL); sv('dq_last_saved', new Date().toISOString());
+    lastSync = new Date().toISOString();
+    sv('dq_last_sync', lastSync);
+    
+    toast('📥 클라우드 복원 완료!');
+    render();
+  } catch(e) {
+    console.error(e);
+    toast('☁️ 복원 실패 (Gist ID 또는 토큰 확인)', 'var(--red)');
+  }
+}
+
+window.saveGistConfig = () => {
+  githubPAT = document.getElementById('cfg-pat').value.trim();
+  gistID = document.getElementById('cfg-gist').value.trim();
+  sv('dq_github_pat', githubPAT);
+  sv('dq_gist_id', gistID);
+  toast('☁️ 클라우드 설정이 저장되었습니다.');
+  if(githubPAT && !gistID) {
+    syncToGist(true); // 자동 생성 트리거
+  } else {
+    render();
+  }
+};
+/* ══════════════════════════ */
 
 /* ══ BANK ══ */
 function bk(){
@@ -412,7 +523,6 @@ function bk(){
 }
 
 const W=n=>'₩'+Number(n||0).toLocaleString('ko-KR');
-/* NaN 수정: 날짜 포맷 함수 안전 처리 */
 const FD=s=>{
   if(!s||s==='undefined'||s==='null')return'-';
   const d=new Date(s);
@@ -502,7 +612,7 @@ function showLevelUpModal(lvData) {
     <button class="btn btn-blue" style="width:100%;font-size:15px;padding:12px;border-radius:12px" onclick="this.closest('.lu-wrap').remove();explodeParticles(window.innerWidth/2,window.innerHeight/2,40)">확인</button>
   </div>`;
   document.body.appendChild(wrap);
-  void wrap.offsetWidth; // 렌더링 강제 업데이트 (애니메이션 적용 위함)
+  void wrap.offsetWidth;
   wrap.classList.add('show');
 }
 
@@ -526,7 +636,7 @@ function doComplete(id,btnEl){
     
     const curLvData = getLevel(bk().te);
     if(curLvData.level > prevLv) {
-      setTimeout(()=>showLevelUpModal(curLvData), 600); // 경험치 바가 차오른 후 띄움
+      setTimeout(()=>showLevelUpModal(curLvData), 600);
     }
     
     render();
@@ -651,7 +761,7 @@ function renderBank(){
   </div>`;
 }
 
-/* ══ 기한 상태 체크 ══ */
+/* ══ CARDS & LOGS ══ */
 function getDueStatus(q){
   if(!q.dueDate)return null;
   const due=TODATE(q.dueDate);
@@ -661,7 +771,6 @@ function getDueStatus(q){
   return'ok';
 }
 
-/* ══ CARDS ══ */
 function qCard(q,todayMode=false){
   const done=q.status==='완료';
   const cat=migrateCat(q.category);
@@ -702,7 +811,6 @@ function qCard(q,todayMode=false){
   </div>`;
 }
 
-/* ══ REWARD CATS ══ */
 const RC_CATS=[
   {cat:'food',label:'음식',emojis:['🍜','🍣','🍕','🍔','🥩','🍱','🍰','🧁','☕','🧃','🍾','🍷']},
   {cat:'clothes',label:'옷/패션',emojis:['👔','👗','👟','👜','🕶️','🧥','👒','💍','⌚','🎒']},
@@ -711,7 +819,9 @@ const RC_CATS=[
   {cat:'travel',label:'여행',emojis:['✈️','🏖️','🗼','🏔️','🚢','🏨','🗺️','🌏','🎡','🛫']},
   {cat:'drink',label:'술자리',emojis:['🍺','🍻','🥂','🍸','🥃','🍶','🎊','🎉','🪄','🃏']},
 ];
+
 function getREmoji(r){return r.remoji||'🎁'}
+
 function rCard(r,highlight=false){
   const b=bk(),ok=b.bal>=r.cost;
   const catObj=RC_CATS.find(c=>c.cat===(r.rcat||''));
@@ -727,6 +837,7 @@ function rCard(r,highlight=false){
     <div class="qcard-edit-hint">탭해서 수정 ✏️</div>
   </div>`;
 }
+
 function logRow(l,type){
   const isE=type==='q';
   return`<div class="log-row">
@@ -742,31 +853,6 @@ function logRow(l,type){
     </div>
     <div class="log-amt ${isE?'log-earn':'log-spend'}">${isE?'+':'-'}${W(l.earnedReward||l.spentCost)}</div>
   </div>`;
-}
-
-/* ══ PAGES ══ */
-function renderDash(){
-  const b=bk();
-  const todayQ=Q.filter(q=>q.status==='진행중'&&(q.dueDate===TODAYSTR||(q.type==='반복'&&q.todayCheck)));
-  const active=Q.filter(q=>q.status==='진행중');
-  const overdue=Q.filter(q=>q.status==='진행중'&&q.dueDate&&TODATE(q.dueDate)<TODAY);
-  const rL=[...QL].reverse().slice(0,5),rP=[...PL].reverse().slice(0,3);
-  let h='';
-  /* 기한 초과 알림 */
-  if(overdue.length>0){
-    h+=`<div style="background:var(--red-bg);border:1px solid rgba(255,78,78,.3);border-radius:var(--r-sm);padding:10px 13px;margin-bottom:12px;font-size:12px;color:var(--red);font-weight:600">⚠️ 기한 초과 퀘스트 ${overdue.length}개 · 빠르게 완료하세요!</div>`;
-  }
-  if(todayQ.length>0){h+=`<div class="sec-head"><span class="sec-title">📅 오늘의 퀘스트</span></div>`;h+=todayQ.map(q=>qCard(q,true)).join('')}
-  h+=`<div class="sec-head"><span class="sec-title">⚔️ 진행중 퀘스트</span><button class="sec-more" onclick="go('quests')">${active.length}개 →</button></div>`;
-  h+=active.length===0?`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">진행중인 퀘스트가 없어요</div></div>`:active.slice(0,3).map(q=>qCard(q)).join('');
-  const buyable=R.filter(r=>r.cost<=b.bal);
-  h+=`<div class="sec-head"><span class="sec-title">🎁 구매 가능한 리워드</span><button class="sec-more" onclick="go('rewards')">${buyable.length}개 →</button></div>`;
-  h+=buyable.length===0?`<div class="empty"><div class="empty-ico">💸</div><div class="empty-txt">퀘스트를 완료해서 잔고를 채우세요!</div></div>`:buyable.slice(0,2).map(r=>rCard(r)).join('');
-  h+=`<div class="sec-head"><span class="sec-title">📋 최근 완료 로그</span></div>`;
-  h+=rL.length===0?`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">아직 완료한 퀘스트가 없어요</div></div>`:`<div class="log-card">${rL.map(l=>logRow(l,'q')).join('')}</div>`;
-  h+=`<div class="sec-head"><span class="sec-title">🛒 최근 구매 로그</span></div>`;
-  h+=rP.length===0?`<div class="empty"><div class="empty-ico">🛍️</div><div class="empty-txt">아직 구매 내역이 없어요</div></div>`:`<div class="log-card">${rP.map(l=>logRow(l,'p')).join('')}</div>`;
-  return h;
 }
 
 /* ══ GET QUEST LIST (부분 렌더링용) ══ */
@@ -792,6 +878,52 @@ function getQuestListHTML(){
   return f.length===0?`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">퀘스트가 없어요</div></div>`:f.map(q=>qCard(q)).join('');
 }
 window._uq=()=>{const el=document.getElementById('q-list');if(el)el.innerHTML=getQuestListHTML();};
+
+/* ══ GET LOG LIST (부분 렌더링용) ══ */
+window._ul=()=>{
+  const isQ=logTab==='quest';
+  const list=isQ?QL:PL;
+  const filtered=list.filter(l=>{
+    const title=l.questTitleSnapshot||l.rewardTitleSnapshot||'';
+    return title.toLowerCase().includes(logSearch.toLowerCase());
+  }).sort((a,b)=>new Date(b.completedAt||b.purchasedAt)-new Date(a.completedAt||a.purchasedAt));
+  const totalAmt=filtered.reduce((s,l)=>s+(isQ?(l.earnedReward||0):(l.spentCost||0)),0);
+  
+  const elCount=document.getElementById('log-total-count');
+  if(elCount)elCount.textContent=`총 ${filtered.length}건`;
+  const elAmt=document.getElementById('log-total-amt');
+  if(elAmt)elAmt.textContent=`${isQ?'+':'-'}${W(totalAmt)}`;
+  
+  const elList=document.getElementById('l-list');
+  if(elList){
+    elList.innerHTML=filtered.length===0?`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">기록된 로그가 없어요</div></div>`:`<div class="log-card" style="padding:0 14px;">${filtered.map(l=>logRow(l,isQ?'q':'p')).join('')}</div>`;
+  }
+};
+
+/* ══ PAGES ══ */
+function renderDash(){
+  const b=bk();
+  const todayQ=Q.filter(q=>q.status==='진행중'&&(q.dueDate===TODAYSTR||(q.type==='반복'&&q.todayCheck)));
+  const active=Q.filter(q=>q.status==='진행중');
+  const overdue=Q.filter(q=>q.status==='진행중'&&q.dueDate&&TODATE(q.dueDate)<TODAY);
+  const rL=[...QL].reverse().slice(0,5),rP=[...PL].reverse().slice(0,3);
+  let h='';
+  /* 기한 초과 알림 */
+  if(overdue.length>0){
+    h+=`<div style="background:var(--red-bg);border:1px solid rgba(255,78,78,.3);border-radius:var(--r-sm);padding:10px 13px;margin-bottom:12px;font-size:12px;color:var(--red);font-weight:600">⚠️ 기한 초과 퀘스트 ${overdue.length}개 · 빠르게 완료하세요!</div>`;
+  }
+  if(todayQ.length>0){h+=`<div class="sec-head"><span class="sec-title">📅 오늘의 퀘스트</span></div>`;h+=todayQ.map(q=>qCard(q,true)).join('')}
+  h+=`<div class="sec-head"><span class="sec-title">⚔️ 진행중 퀘스트</span><button class="sec-more" onclick="go('quests')">${active.length}개 →</button></div>`;
+  h+=active.length===0?`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">진행중인 퀘스트가 없어요</div></div>`:active.slice(0,3).map(q=>qCard(q)).join('');
+  const buyable=R.filter(r=>r.cost<=b.bal);
+  h+=`<div class="sec-head"><span class="sec-title">🎁 구매 가능한 리워드</span><button class="sec-more" onclick="go('rewards')">${buyable.length}개 →</button></div>`;
+  h+=buyable.length===0?`<div class="empty"><div class="empty-ico">💸</div><div class="empty-txt">퀘스트를 완료해서 잔고를 채우세요!</div></div>`:buyable.slice(0,2).map(r=>rCard(r)).join('');
+  h+=`<div class="sec-head"><span class="sec-title">📋 최근 완료 로그</span></div>`;
+  h+=rL.length===0?`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">아직 완료한 퀘스트가 없어요</div></div>`:`<div class="log-card">${rL.map(l=>logRow(l,'q')).join('')}</div>`;
+  h+=`<div class="sec-head"><span class="sec-title">🛒 최근 구매 로그</span></div>`;
+  h+=rP.length===0?`<div class="empty"><div class="empty-ico">🛍️</div><div class="empty-txt">아직 구매 내역이 없어요</div></div>`:`<div class="log-card">${rP.map(l=>logRow(l,'p')).join('')}</div>`;
+  return h;
+}
 
 function renderQuests(){
   const tabs=['진행중','반복','단발','완료','예정','전체'];
@@ -832,27 +964,6 @@ function renderRewards(){
   return h;
 }
 
-/* ══ GET LOG LIST (부분 렌더링용) ══ */
-window._ul=()=>{
-  const isQ=logTab==='quest';
-  const list=isQ?QL:PL;
-  const filtered=list.filter(l=>{
-    const title=l.questTitleSnapshot||l.rewardTitleSnapshot||'';
-    return title.toLowerCase().includes(logSearch.toLowerCase());
-  }).sort((a,b)=>new Date(b.completedAt||b.purchasedAt)-new Date(a.completedAt||a.purchasedAt));
-  const totalAmt=filtered.reduce((s,l)=>s+(isQ?(l.earnedReward||0):(l.spentCost||0)),0);
-  
-  const elCount=document.getElementById('log-total-count');
-  if(elCount)elCount.textContent=`총 ${filtered.length}건`;
-  const elAmt=document.getElementById('log-total-amt');
-  if(elAmt)elAmt.textContent=`${isQ?'+':'-'}${W(totalAmt)}`;
-  
-  const elList=document.getElementById('l-list');
-  if(elList){
-    elList.innerHTML=filtered.length===0?`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">기록된 로그가 없어요</div></div>`:`<div class="log-card" style="padding:0 14px;">${filtered.map(l=>logRow(l,isQ?'q':'p')).join('')}</div>`;
-  }
-};
-
 /* ══ 로그 탭 ══ */
 function renderLogs(){
   const isQ = logTab === 'quest';
@@ -891,20 +1002,6 @@ function renderLogs(){
 }
 
 /* ══ 6번: 캘린더 (연속 그래픽 및 기한초과 반영) ══ */
-function questColor(q){
-  const palette=['#3b82f6','#00c471','#f5a623','#8b5cf6','#ec4899','#14b8a6','#f97316','#06b6d4','#a3e635','#ef4444','#6366f1','#eab308'];
-  const key=String(q?.id||q?.title||'');
-  let h=0;
-  for(let i=0;i<key.length;i++) h=(h*31+key.charCodeAt(i))>>>0;
-  return palette[h%palette.length];
-}
-function hexToRgba(hex,a=.18){
-  const h=String(hex||'#3b82f6').replace('#','');
-  const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);
-  return `rgba(${r},${g},${b},${a})`;
-}
-
-/* ══ 6번: 캘린더 (퀘스트별 컬러 구간 및 기한초과 반영) ══ */
 function renderCalendar(){
   const MONTHS=['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
   const DOWS=['일','월','화','수','목','금','토'];
@@ -944,41 +1041,43 @@ function renderCalendar(){
     const logs=logsByDate[cell.key]||[];
     const cellDate=TODATE(cell.key);
     
-    /* 1. 이 날짜에 걸쳐 있는 퀘스트를 각 퀘스트 고유 색상 바(bar)로 표시 */
+    /* 1. 기간 범위 클래스 계산 (연속 그래픽) */
+    let rangeClass='';
     const inRangeQuests = rangeQuests.filter(q => cellDate >= TODATE(q.startDate) && cellDate <= TODATE(q.dueDate));
-    let rangeBars='';
-    inRangeQuests.slice(0,4).forEach(q=>{
-      let cls='range-mid';
-      if(q.startDate===cell.key && q.dueDate===cell.key) cls='range-only';
-      else if(q.startDate===cell.key) cls='range-start';
-      else if(q.dueDate===cell.key) cls='range-end';
-      const color=questColor(q);
-      rangeBars+=`<div class="cal-range-bar ${cls}" title="${esc(q.title)}" style="background:${color}"></div>`;
-    });
-    if(inRangeQuests.length>4) rangeBars+=`<div class="cal-more">+${inRangeQuests.length-4}</div>`;
+    
+    if(inRangeQuests.length > 0){
+      const isStart=inRangeQuests.some(q=>q.startDate===cell.key);
+      const isEnd=inRangeQuests.some(q=>q.dueDate===cell.key);
+      if(isStart&&isEnd)rangeClass='range-only';
+      else if(isStart)rangeClass='range-start';
+      else if(isEnd)rangeClass='range-end';
+      else rangeClass='range-mid';
+    }
 
     /* 2. 기한 초과 퀘스트 확인 (마감일이 지났고 진행중인 것) */
     const isOverdueDay = activeQuests.some(q => q.status==='진행중' && q.dueDate===cell.key && TODATE(q.dueDate)<TODAY);
-    const deadlineClass = isOverdueDay ? ' deadline' : '';
+    if(isOverdueDay) rangeClass += ' deadline'; // 빨간 테두리
     
-    /* 3. 점 표시 로직: 완료 로그 + 시작일/마감일을 퀘스트 고유 색상으로 표시 */
+    /* 3. 점 표시 로직 */
     let dots='';
+    // 로그 점 (완료)
     if(logs.length>0) dots+=`<div class="cal-dot cal-dot-log"></div>`.repeat(Math.min(logs.length,3));
-    const eventQuests=activeQuests.filter(q => q.startDate===cell.key || q.dueDate===cell.key);
-    eventQuests.slice(0,4).forEach(q=>{
-      const overdue=q.status==='진행중' && q.dueDate===cell.key && TODATE(q.dueDate)<TODAY;
-      dots+=`<div class="cal-dot" title="${esc(q.title)}" style="background:${overdue?'var(--red)':questColor(q)}"></div>`;
-    });
+    
+    // 현재 날짜에 마감일이나 시작일 이벤트가 있는가?
+    const hasQuestEvent = activeQuests.some(q => q.startDate===cell.key || q.dueDate===cell.key);
+    
+    // 기한 초과된 날이면 빨간 점, 그게 아니고 이벤트가 있으면 파란 점
+    if(isOverdueDay) dots+=`<div class="cal-dot cal-dot-overdue"></div>`;
+    else if(hasQuestEvent) dots+=`<div class="cal-dot cal-dot-quest"></div>`;
 
-    // 투데이(Today) 마커: 오늘 날짜인데 해결 안 된 기한 초과 퀘스트가 있다면 빨간 점 추가
+    // 💡 투데이(Today) 마커: 오늘 날짜인데 '전체적으로' 해결 안 된 기한 초과 퀘스트가 있다면 빨간 점 추가 (경고)
     if(isToday && activeQuests.some(q => q.status==='진행중' && q.dueDate && TODATE(q.dueDate)<TODAY)){
-       if(!isOverdueDay) dots+=`<div class="cal-dot cal-dot-overdue"></div>`;
+       if(!isOverdueDay) dots+=`<div class="cal-dot cal-dot-overdue"></div>`; // 이미 위에서 빨간 점을 안 그렸을 때만 추가
     }
     
-    grid+=`<div class="cal-cell${deadlineClass}${isToday?' today':''}${isSel?' selected':''}" onclick="calSelDate=calSelDate==='${cell.key}'?null:'${cell.key}';render()">
+    grid+=`<div class="cal-cell ${rangeClass}${isToday?' today':''}${isSel?' selected':''}" onclick="calSelDate=calSelDate==='${cell.key}'?null:'${cell.key}';render()">
       <div class="cal-date">${cell.d}</div>
       ${dots?`<div class="cal-dot-wrap">${dots}</div>`:''}
-      ${rangeBars?`<div class="cal-range-stack">${rangeBars}</div>`:''}
     </div>`;
   });
   
@@ -1011,17 +1110,16 @@ function renderCalendar(){
       dayLogs.forEach(l=>{selInfo+=`<div class="cal-quest-item"><div class="cal-quest-dot" style="background:var(--green)"></div><div class="cal-quest-name">${esc(l.questTitleSnapshot)}</div><div class="cal-quest-type">+${W(l.earnedReward)}</div></div>`});
     }
     
-    // 기한 초과 리스트 강력하게 표시 (빨간색 + 원래 퀘스트 색상 라벨)
+    // 기한 초과 리스트 강력하게 표시 (빨간색)
     if(overdueList.length>0){
       selInfo+=`<div style="font-size:11px;color:var(--red);font-weight:600;margin:8px 0 5px">⚠️ 기한 초과 퀘스트</div>`;
       overdueList.forEach(q=>{
-        const color=questColor(q);
-        selInfo+=`<div class="cal-quest-item" onclick="questForm('${q.id}');"><div class="cal-quest-dot" style="background:${color};box-shadow:0 0 0 2px var(--red)"></div><div class="cal-quest-name" style="color:var(--red);font-weight:700">${esc(q.title)}</div><div class="cal-quest-type" style="color:var(--red)">마감: ${q.dueDate}</div></div>`;
+        selInfo+=`<div class="cal-quest-item" onclick="questForm('${q.id}');"><div class="cal-quest-dot" style="background:var(--red)"></div><div class="cal-quest-name" style="color:var(--red);font-weight:700">${esc(q.title)}</div><div class="cal-quest-type" style="color:var(--red)">마감: ${q.dueDate}</div></div>`;
       });
     }
 
     // 일반 일정 표시
-    const normalDayQuests = dayQuests.filter(q => !overdueList.some(oq => oq.id === q.id));
+    const normalDayQuests = dayQuests.filter(q => !overdueList.some(oq => oq.id === q.id)); // 기한초과에 이미 표시된 건 제외
     if(normalDayQuests.length>0){
       selInfo+=`<div style="font-size:11px;color:var(--blue);font-weight:600;margin:8px 0 5px">📅 퀘스트 일정</div>`;
       normalDayQuests.forEach(q=>{
@@ -1029,8 +1127,8 @@ function renderCalendar(){
         if(q.startDate===calSelDate && q.dueDate===calSelDate) typeStr = '시작/마감';
         else if(q.startDate===calSelDate) typeStr = '시작일';
         else if(q.dueDate===calSelDate) typeStr = '마감일';
-        const color=questColor(q);
-        selInfo+=`<div class="cal-quest-item" onclick="questForm('${q.id}');"><div class="cal-quest-dot" style="background:${color}"></div><div class="cal-quest-name">${esc(q.title)}</div><div class="cal-quest-type">${typeStr}</div></div>`;
+
+        selInfo+=`<div class="cal-quest-item" onclick="questForm('${q.id}');"><div class="cal-quest-dot" style="background:var(--blue)"></div><div class="cal-quest-name">${esc(q.title)}</div><div class="cal-quest-type">${typeStr}</div></div>`;
       });
     }
     
@@ -1040,7 +1138,6 @@ function renderCalendar(){
     selInfo+=`</div>`;
   }
   
-  const legendQuests=rangeQuests.slice(0,6);
   return`<div class="cal-wrap">
     <div class="cal-header">
       <button class="cal-nav" onclick="calMonth--;if(calMonth<0){calMonth=11;calYear--}calSelDate=null;render()">‹</button>
@@ -1051,24 +1148,42 @@ function renderCalendar(){
     <div class="cal-grid">${grid}</div>
     <div class="cal-legend">
       <div class="cal-legend-item"><div class="cal-dot cal-dot-log" style="width:8px;height:8px"></div>완료 기록</div>
-      <div class="cal-legend-item"><div style="width:12px;height:8px;background:linear-gradient(90deg,#3b82f6,#f5a623,#8b5cf6);border-radius:2px"></div>퀘스트별 기간 색상</div>
+      <div class="cal-legend-item"><div style="width:12px;height:8px;background:rgba(59,130,246,.2);border-radius:2px"></div>퀘스트 기간</div>
       <div class="cal-legend-item"><div style="width:10px;height:10px;border:1px solid var(--red);border-radius:2px"></div>기한 초과</div>
     </div>
   </div>
-  ${legendQuests.length?`<div class="cal-quest-list" style="margin-bottom:10px">
-    <div style="font-size:11px;color:var(--t3);font-weight:700;margin-bottom:6px">진행 퀘스트 색상표</div>
-    ${legendQuests.map(q=>`<div class="cal-quest-item" onclick="questForm('${q.id}')"><div class="cal-quest-dot" style="background:${questColor(q)}"></div><div class="cal-quest-name">${esc(q.title)}</div><div class="cal-quest-type">${q.startDate||'-'} ~ ${q.dueDate||'-'}</div></div>`).join('')}
-    ${rangeQuests.length>6?`<div style="font-size:11px;color:var(--t3);padding-top:6px">외 ${rangeQuests.length-6}개는 날짜를 눌러 확인</div>`:''}
-  </div>`:''}
   ${selInfo}`;
 }
 
 function renderSettings(){
   const b=bk();
-  /* NaN 수정: lastSaved 안전 처리 */
-  const lastSaved=localStorage.getItem('dq_last_saved');
-  const lastSavedStr=(lastSaved&&lastSaved!=='undefined'&&lastSaved!=='null')?FD(lastSaved):'-';
+  const lastSavedStr=(lastSync&&lastSync!=='undefined'&&lastSync!=='null')?FD(lastSync):'동기화 안 됨';
   return`
+  <div class="sec-head"><span class="sec-title">☁️ 클라우드 동기화 (GitHub Gist)</span></div>
+  <div class="setting-item" style="display:block">
+    <div style="font-size:11px;color:var(--t2);margin-bottom:12px;line-height:1.5">
+      GitHub <b>Personal Access Token</b>을 입력하면 데이터가 Gist에 <b>자동으로 백업</b>됩니다. (권한: gist)
+    </div>
+    <div class="form-group">
+      <label class="form-label">GitHub Token (PAT)</label>
+      <input type="password" class="form-input" id="cfg-pat" placeholder="ghp_..." value="${esc(githubPAT)}">
+    </div>
+    <div class="form-group" style="margin-bottom:8px">
+      <label class="form-label">Gist ID (최초 1회 자동 생성됨)</label>
+      <input type="text" class="form-input" id="cfg-gist" placeholder="생성된 Gist ID" value="${esc(gistID)}">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="btn btn-blue" style="flex:1;justify-content:center" onclick="saveGistConfig()">설정 저장</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">
+      <button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:11px" onclick="syncToGist(true)">📤 수동 백업</button>
+      <button class="btn btn-ghost" style="flex:1;justify-content:center;font-size:11px" onclick="fetchFromGist()">📥 수동 복원</button>
+    </div>
+    <div style="font-size:10px;color:var(--t3);margin-top:10px;text-align:right" id="sync-time-lbl">
+      마지막 동기화: ${lastSavedStr}
+    </div>
+  </div>
+
   <div class="sec-head"><span class="sec-title">📊 현재 데이터 현황</span></div>
   <div class="data-info-card">
     <div class="data-info-row"><span class="data-info-label">⚔️ 퀘스트</span><span class="data-info-value">${Q.length}개</span></div>
@@ -1078,18 +1193,19 @@ function renderSettings(){
     <div class="data-info-row"><span class="data-info-label">💰 현재 잔고</span><span class="data-info-value" style="color:var(--blue)">${W(b.bal)}</span></div>
     <div class="data-info-row"><span class="data-info-label">📈 총 획득</span><span class="data-info-value" style="color:var(--green)">${W(b.te)}</span></div>
     <div class="data-info-row"><span class="data-info-label">🏅 현재 레벨</span><span class="data-info-value">${getLevel(b.te).emoji} Lv.${getLevel(b.te).level} ${getLevel(b.te).title}</span></div>
-    <div class="data-info-row"><span class="data-info-label">🕐 마지막 저장</span><span class="data-info-value">${lastSavedStr}</span></div>
   </div>
-  <div class="sec-head"><span class="sec-title">💾 데이터 관리</span></div>
-  <div class="setting-item"><div class="setting-item-left"><div class="setting-item-title">📤 JSON 내보내기</div><div class="setting-item-desc">모든 데이터를 JSON 파일로 저장</div></div><button class="btn btn-ghost" onclick="exportJSON()">내보내기</button></div>
+
+  <div class="sec-head"><span class="sec-title">💾 수동 파일 관리 (로컬)</span></div>
+  <div class="setting-item"><div class="setting-item-left"><div class="setting-item-title">📤 JSON 내보내기</div><div class="setting-item-desc">모든 데이터를 기기에 다운로드</div></div><button class="btn btn-ghost" onclick="exportJSON()">내보내기</button></div>
   <div class="setting-item"><div class="setting-item-left"><div class="setting-item-title">📥 JSON 가져오기</div><div class="setting-item-desc">백업 파일로 데이터 복원</div></div><button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">가져오기</button></div>
   <input type="file" id="import-file" accept=".json" style="display:none" onchange="importJSON(event)">
+
   <div class="sec-head"><span class="sec-title">⚠️ 위험 구역</span></div>
   <div class="setting-item"><div class="setting-item-left"><div class="setting-item-title">🔄 샘플 데이터로 초기화</div><div class="setting-item-desc">노션 초기 데이터로 되돌립니다</div></div><button class="btn btn-ghost" onclick="resetToSample()">초기화</button></div>
   <div class="setting-item"><div class="setting-item-left"><div class="setting-item-title">🗑️ 전체 데이터 삭제</div><div class="setting-item-desc" style="color:var(--red)">모든 데이터가 삭제됩니다</div></div><button class="btn btn-red" onclick="deleteAll()">삭제</button></div>`;
 }
 
-/* 설정 기능 */
+/* ══ FILE 관리 기능 ══ */
 function exportJSON(){
   const data={quests:Q,questLogs:QL,rewards:R,purchaseLogs:PL,exportedAt:new Date().toISOString()};
   const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
@@ -1115,7 +1231,6 @@ function resetToSample(){
   if(!confirm('노션 초기 데이터로 되돌릴까요?\n현재 데이터가 모두 사라집니다.'))return;
   Q=JSON.parse(JSON.stringify(SQ));QL=JSON.parse(JSON.stringify(SQL));
   R=JSON.parse(JSON.stringify(SR));PL=JSON.parse(JSON.stringify(SPL));
-  /* NaN 수정: 초기화 후 last_saved 제거 */
   localStorage.removeItem('dq_last_saved');
   saveAll();toast('🔄 초기 데이터로 되돌렸어요');render();
 }
@@ -1268,6 +1383,7 @@ function render(){
   checkScheduled();
   document.getElementById('page-title').textContent=PC[pg];
   renderBank();
+
   const m=document.getElementById('main');
   if(pg==='dash')m.innerHTML=renderDash();
   else if(pg==='quests')m.innerHTML=renderQuests();
