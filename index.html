@@ -113,6 +113,31 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .qcard-meta{font-size:11px;color:var(--t3);line-height:1.7}
 .qcard-meta b{color:var(--t2);font-weight:600}
 .qcard-edit-hint{font-size:10px;color:var(--t3);text-align:right;margin-top:6px}
+
+/* MAIN/SUB QUEST ACCORDION v1.4 */
+.qcard.main-quest{border-color:rgba(96,165,250,.38);background:linear-gradient(180deg,#20202b,#171720);box-shadow:0 12px 30px rgba(0,0,0,.22)}
+.qcard.main-quest.done{opacity:.78;border-color:rgba(0,196,113,.32)}
+.main-quest-headline{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:900;color:#93c5fd;letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.main-progress-wrap{margin:11px 0 9px}
+.main-progress-top{display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--t2);font-weight:800;margin-bottom:5px}
+.main-progress-track{height:6px;background:var(--line2);border-radius:999px;overflow:hidden}
+.main-progress-fill{height:100%;background:linear-gradient(90deg,#60a5fa,#8b5cf6);border-radius:999px;transition:width .25s ease}
+.main-next-step{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:10px;padding:8px 10px;font-size:11px;color:var(--t2);line-height:1.45;margin:8px 0}
+.main-next-step b{color:var(--t1)}
+.main-accordion-btn{width:100%;justify-content:center;margin-top:7px;padding:10px 14px;font-size:13px;border-radius:12px}
+.subquest-list{border-top:1px solid var(--line);margin:12px -14px -2px;padding:10px 14px 0}
+.subquest-row{display:grid;grid-template-columns:18px 1fr auto;gap:8px;align-items:center;padding:8px 8px;border-radius:10px;cursor:pointer;transition:background .15s;margin-bottom:3px}
+.subquest-row:hover{background:rgba(255,255,255,.04)}
+.subquest-row.current{background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.18)}
+.subquest-row.done{opacity:.62}.subquest-row.done .subquest-title{text-decoration:line-through}
+.subquest-dot{width:9px;height:9px;border-radius:50%;background:#636579;box-shadow:0 0 0 3px rgba(255,255,255,.03)}
+.subquest-row.done .subquest-dot{background:#64d982}.subquest-row.current .subquest-dot{background:#60a5fa}
+.subquest-title{font-size:12px;font-weight:800;color:var(--t1);line-height:1.32;min-width:0}.subquest-parent{font-size:10px;color:#93c5fd;margin-top:2px}.subquest-meta{font-size:10px;color:var(--t3);margin-top:2px;line-height:1.35}
+.subquest-reward{font-size:11px;font-weight:900;color:#77a2ff;white-space:nowrap;text-align:right}.subquest-reward.done{color:#6ee7b7}
+.subquest-actions{display:flex;gap:7px;margin-top:10px}.subquest-actions .btn{flex:1;justify-content:center}
+.subquest-bonus{border:1px solid rgba(139,92,246,.3);background:rgba(139,92,246,.10);border-radius:12px;padding:9px 10px;margin-top:8px;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:900;color:#c4b5fd}
+.main-mini-label{display:inline-flex;align-items:center;gap:4px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.25);color:#93c5fd;border-radius:999px;padding:2px 7px;font-size:10px;font-weight:900}
+
 /* 오늘의 퀘스트 */
 .today-card{background:linear-gradient(135deg,#1a1f35,#1e2438);border:1px solid rgba(59,130,246,.35);border-radius:var(--r);padding:13px;margin-bottom:8px;cursor:pointer;position:relative;overflow:hidden}
 .today-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--purple))}
@@ -255,6 +280,17 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .sub-tabs::-webkit-scrollbar{display:none}
 .stab{background:var(--card2);border:1px solid var(--line);border-radius:var(--r-xs);color:var(--t3);padding:5px 11px;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s}
 .stab.on{background:var(--blue-bg);border-color:rgba(59,130,246,.3);color:var(--blue)}
+
+/* ══ QUEST TAB COMPACT LAYOUT v1.4.1 ══ */
+.quest-tabs-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.10);overflow:hidden}
+.quest-tabs-primary{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
+.quest-tab-main{min-width:0;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--t3);padding:8px 4px;font-size:11px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.quest-tab-main.on{background:var(--blue-bg);border-color:rgba(59,130,246,.45);color:var(--blue);box-shadow:0 0 12px rgba(59,130,246,.12)}
+.quest-tabs-secondary{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.quest-tab-sub{min-width:0;background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:10px;color:var(--t3);padding:7px 3px;font-size:10px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center;white-space:nowrap}
+.quest-tab-sub.on{background:var(--purple-bg);border-color:rgba(139,92,246,.45);color:var(--purple);box-shadow:0 0 12px rgba(139,92,246,.10)}
+@media (max-width:360px){.quest-tabs-primary{grid-template-columns:repeat(2,1fr)}.quest-tabs-secondary{grid-template-columns:repeat(3,1fr)}.quest-tab-main{font-size:11px;padding:8px 3px}.quest-tab-sub{font-size:10px}}
+
 
 /* STYLE SHOP FILTER v1.2.6: 모바일에서 모든 페르소나 탭이 항상 보이도록 2단 필터 카드화 */
 .style-filter-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
@@ -1001,7 +1037,7 @@ function questStatusWeight(q){
 }
 function questDifficultyWeight(q){return{S:4,A:3,B:2,C:1}[q?.difficulty]||1}
 function getSuggestedQuestForPersona(cat){
-  const list=Q.filter(q=>migrateCat(q.category||'몸')===cat&&q.status!=='완료');
+  const list=Q.filter(q=>migrateCat(q.category||'몸')===cat&&isRecommendableQuest(q));
   list.sort((a,b)=>{
     const aw=questStatusWeight(a),bw=questStatusWeight(b);if(aw!==bw)return aw-bw;
     const ad=a.dueDate?TODATE(a.dueDate).getTime():8640000000000000;
@@ -1056,7 +1092,7 @@ function getRecommendedQuestList(data,limit=12){
   const ordered=[...PERSONA_ORDER].sort((a,b)=>personaSortWeak(a,b,data.stats));
   const picked=[],used=new Set();
   for(const cat of ordered){
-    const qs=Q.filter(q=>migrateCat(q.category||'몸')===cat&&q.status!=='완료');
+    const qs=Q.filter(q=>migrateCat(q.category||'몸')===cat&&isRecommendableQuest(q));
     qs.sort((a,b)=>{
       const aw=questStatusWeight(a),bw=questStatusWeight(b);if(aw!==bw)return aw-bw;
       const ad=a.dueDate?TODATE(a.dueDate).getTime():8640000000000000;
@@ -1080,7 +1116,7 @@ function renderQuestRecommendationCard(rec,idx){
     :q.type==='반복'
       ?`<button class="btn btn-purple btn-sm quest-rec-clear" onclick='event.stopPropagation();doComplete(${JSON.stringify(q.id)},this)'>🔁 클리어</button>`
       :`<button class="btn btn-blue btn-sm quest-rec-clear" onclick='event.stopPropagation();doComplete(${JSON.stringify(q.id)},this)'>✅ 완료</button>`;
-  return`<div class="quest-rec-card ${personaClass(rec.cat)}"><div class="quest-rec-head"><span class="quest-rec-rank">추천 ${idx+1}${rec.isWeakest?' · 최저 분야':''}</span><span class="quest-rec-cat">${cfg.emoji} ${rec.cat} Lv.${st.level}</span></div><div class="quest-rec-title">${esc(q.title)}</div><div class="quest-rec-meta"><span>${q.status}</span><span>${q.type}</span><span>${q.difficulty||'C'}등급</span><span>${W(q.reward||0)}</span><span>${questDueLabel(q)}</span></div><div class="quest-rec-reason">${esc(rec.reason)}</div><div class="quest-rec-actions">${clearBtn}<button class="btn btn-ghost btn-sm" onclick='questForm(${JSON.stringify(q.id)})'>상세 보기</button><button class="btn btn-ghost btn-sm" onclick='qT="전체";qSearch=${JSON.stringify(rec.cat)};render()'>${cfg.emoji} 같은 분야 보기</button></div></div>`
+  return`<div class="quest-rec-card ${personaClass(rec.cat)}"><div class="quest-rec-head"><span class="quest-rec-rank">추천 ${idx+1}${rec.isWeakest?' · 최저 분야':''}</span><span class="quest-rec-cat">${cfg.emoji} ${rec.cat} Lv.${st.level}</span></div><div class="quest-rec-title">${isSubQuest(q)?'🔗 ':''}${esc(q.title)}</div>${questParent(q)?`<div class="subquest-parent">연결 목표: ${esc(questParent(q).title)}</div>`:''}<div class="quest-rec-meta"><span>${q.status}</span><span>${q.type}</span><span>${q.difficulty||'C'}등급</span><span>${W(q.reward||0)}</span><span>${questDueLabel(q)}</span></div><div class="quest-rec-reason">${esc(rec.reason)}</div><div class="quest-rec-actions">${clearBtn}<button class="btn btn-ghost btn-sm" onclick='questForm(${JSON.stringify(q.id)})'>상세 보기</button><button class="btn btn-ghost btn-sm" onclick='qT="전체";qSearch=${JSON.stringify(rec.cat)};render()'>${cfg.emoji} 같은 분야 보기</button></div></div>`
 }
 function getRecommendedQuestListHTML(){
   const data=buildPersonaStats();
@@ -1106,7 +1142,7 @@ function getRecommendedQuestListHTML(){
 /* ══ PERSONA v1.3.1: 오늘의 성장 루트 + 완주 보너스 + 히스토리 ══ */
 function isQuestCompletedOnDate(qid,date){return QL.some(l=>!l.isDailyRouteBonus&&l.questId===qid&&String(l.completedAt||'').slice(0,10)===date)}
 function isQuestInTodayRoute(qid){P=normalizePersonaState(P);return P.dailyRoute?.date===TODAYSTR&&P.dailyRoute.questIds.includes(qid)}
-function routeQuestPool(){return Q.filter(q=>q.status!=='완료'&&q.status!=='예정')}
+function routeQuestPool(){return Q.filter(q=>q.status!=='완료'&&q.status!=='예정'&&!(isParentQuest(q)&&childQuests(q.id).some(s=>s.status!=='완료')))}
 function buildDailyRouteIds(force=false){
   P=normalizePersonaState(P);
   const current=(P.dailyRoute&&P.dailyRoute.date===TODAYSTR)?P.dailyRoute.questIds.filter(id=>Q.some(q=>q.id===id)):[];
@@ -1144,6 +1180,7 @@ function rerollDailyRoute(){
 function dailyRouteProgress(qs){const done=qs.filter(q=>isQuestCompletedOnDate(q.id,TODAYSTR)||q.status==='완료').length;return{done,total:qs.length,pct:qs.length?Math.round(done/qs.length*100):0}}
 function routeReason(q){
   const data=buildPersonaStats();const cat=migrateCat(q.category||'몸');const due=q.dueDate?TODATE(q.dueDate):null;
+  const parent=questParent(q);if(parent)return `메인 퀘스트 「${parent.title}」의 다음 스텝으로 장기 목표를 밀어주는 루트입니다.`;
   if(due&&due<TODAY)return '기한 초과 퀘스트라 먼저 정리하면 대시보드 부담이 줄어듭니다.';
   if(due&&due.getTime()===TODAY.getTime())return '오늘 마감 퀘스트라 오늘 루트에 우선 배치했습니다.';
   if(cat===data.weakest)return '현재 가장 낮은 페르소나를 끌어올리는 핵심 루트입니다.';
@@ -1180,7 +1217,7 @@ function renderDailyRouteQuest(q,idx){
   const cat=migrateCat(q.category||'몸'),cfg=PERSONA_CFG[cat]||PERSONA_CFG['스킬'];
   const done=isQuestCompletedOnDate(q.id,TODAYSTR)||q.status==='완료';
   const btn=done?`<button class="btn btn-disabled btn-sm" disabled>완료 ✓</button>`:(q.type==='반복'?`<button class="btn btn-purple btn-sm" onclick='event.stopPropagation();doComplete(${JSON.stringify(q.id)},this)'>🔁 클리어</button>`:`<button class="btn btn-blue btn-sm" onclick='event.stopPropagation();doComplete(${JSON.stringify(q.id)},this)'>✅ 완료</button>`);
-  return`<div class="daily-route-item ${personaClass(cat)}${done?' done':''}" onclick='questForm(${JSON.stringify(q.id)})'><div class="daily-route-item-head"><span class="daily-route-step">STEP ${idx+1}</span><span class="daily-route-cat">${cfg.emoji} ${cat}</span></div><div class="daily-route-qtitle">${done?'✓ ':''}${esc(q.title)}</div><div class="daily-route-meta"><span>${q.type}</span><span>${q.difficulty||'C'}등급</span><span>${W(q.reward||0)}</span><span>${questDueLabel(q)}</span></div><div class="daily-route-reason">${esc(routeReason(q))}</div><div class="daily-route-actions">${btn}<button class="btn btn-ghost btn-sm" onclick='event.stopPropagation();questForm(${JSON.stringify(q.id)})'>상세 보기</button></div></div>`;
+  return`<div class="daily-route-item ${personaClass(cat)}${done?' done':''}" onclick='questForm(${JSON.stringify(q.id)})'><div class="daily-route-item-head"><span class="daily-route-step">STEP ${idx+1}</span><span class="daily-route-cat">${cfg.emoji} ${cat}</span></div><div class="daily-route-qtitle">${done?'✓ ':''}${isSubQuest(q)?'🔗 ':''}${esc(q.title)}</div>${questParent(q)?`<div class="subquest-parent">연결: ${esc(questParent(q).title)}</div>`:''}<div class="daily-route-meta"><span>${q.type}</span><span>${q.difficulty||'C'}등급</span><span>${W(q.reward||0)}</span><span>${questDueLabel(q)}</span></div><div class="daily-route-reason">${esc(routeReason(q))}</div><div class="daily-route-actions">${btn}<button class="btn btn-ghost btn-sm" onclick='event.stopPropagation();questForm(${JSON.stringify(q.id)})'>상세 보기</button></div></div>`;
 }
 function renderDailyRouteHistoryMini(){
   P=normalizePersonaState(P);const h=(P.dailyRouteHistory||[]).slice(0,3);
@@ -1245,12 +1282,31 @@ if(PL===null){PL=JSON.parse(JSON.stringify(SPL));sv(SK.PL,PL)}
 if(P===null){P=createDefaultPersonaState();sv(SK.P,P)}
 P=normalizePersonaState(P);sv(SK.P,P)
 RT=normalizeRoutineTransfers(RT);sv(SK.RT,RT)
+let OPEN_PARENTS=ld('dq_main_open_parents',[]);
+function saveOpenParents(){sv('dq_main_open_parents',OPEN_PARENTS)}
 if(!localStorage.getItem('dq_main_cat_migrated')){
   Q=Q.map(q=>{const c=migrateCat(q.category);return{...q,category:c}});
   sv(SK.Q,Q);localStorage.setItem('dq_main_cat_migrated','1');
 }
 
+
+function normalizeQuestHierarchy(){
+  let changed=false;
+  const ids=new Set((Q||[]).map(q=>q.id));
+  (Q||[]).forEach((q,idx)=>{
+    if(q.parentId===undefined||q.parentId===null){q.parentId='';changed=true}
+    if(q.parentId&&!ids.has(q.parentId)){q.parentId='';changed=true}
+    if(q.parentId===q.id){q.parentId='';changed=true}
+    if(q.subOrder===undefined||q.subOrder===null||isNaN(Number(q.subOrder))){q.subOrder=0;changed=true}
+    q.subOrder=Number(q.subOrder)||0;
+  });
+  OPEN_PARENTS=(Array.isArray(OPEN_PARENTS)?OPEN_PARENTS:[]).filter(id=>ids.has(id));
+  return changed;
+}
+normalizeQuestHierarchy();sv(SK.Q,Q);saveOpenParents();
+
 function saveAll(){
+  normalizeQuestHierarchy();
   RT=normalizeRoutineTransfers(RT);
   sv(SK.Q,Q);sv(SK.QL,QL);sv(SK.R,R);sv(SK.PL,PL);sv(SK.P,P);sv(SK.RT,RT);sv('dq_main_last_saved',new Date().toISOString());
   autoSyncGist();
@@ -1298,7 +1354,7 @@ function routineTransferSummary(){
 }
 function makeDQBackupData(extra={}){
   RT=normalizeRoutineTransfers(RT);
-  return {...extra,quests:Q,questLogs:QL,rewards:R,purchaseLogs:PL,persona:P,routineTransfers:RT,exportedAt:new Date().toISOString(),bridgeVersion:'myroutine-dq-v1'};
+  return {...extra,quests:Q,questLogs:QL,rewards:R,purchaseLogs:PL,persona:P,routineTransfers:RT,exportedAt:new Date().toISOString(),bridgeVersion:'dqloop-dq-v1'};
 }
 async function readDQGistBackup(){
   const res=await fetch(`https://api.github.com/gists/${gistID}`,{headers:{'Authorization':`token ${githubPAT}`,'Accept':'application/vnd.github.v3+json'}});
@@ -1324,18 +1380,18 @@ async function writeDQGistBackup(data){
 function makeRoutineTransferLog(t){
   const days=Array.isArray(t.rewardedDays)?t.rewardedDays:[];
   const dateText=days.length?`대상일: ${days.join(', ')}`:'대상일 정보 없음';
-  const memo=[t.memo||'MyRoutine 루틴 잔고 이체',dateText].filter(Boolean).join('\n');
+  const memo=[t.memo||'DQ Loop 루틴 잔고 이체',dateText].filter(Boolean).join('\n');
   return{
     id:uid(),
-    questId:'myroutine_transfer',
-    questTitleSnapshot:'MyRoutine 루틴 이체',
+    questId:'dqloop_transfer',
+    questTitleSnapshot:'DQ Loop 루틴 이체',
     categorySnapshot:'생활/환경',
     difficultySnapshot:'ROUTINE',
     rewardSnapshot:Number(t.amount||0),
     completedAt:t.createdAt||new Date().toISOString(),
     earnedReward:Number(t.amount||0),
     memo,
-    source:'myroutine',
+    source:'dq_loop',
     type:'routine_wallet_transfer',
     routineTransferId:t.id,
     isRoutineTransfer:true,
@@ -1351,7 +1407,7 @@ async function receiveRoutineTransfers(isManual=true){
     toast('GitHub Token과 Gist ID가 필요합니다.','var(--red)');
     return;
   }
-  if(isManual)toast('🔗 MyRoutine 이체 대기열 확인 중...');
+  if(isManual)toast('🔗 DQ Loop 이체 대기열 확인 중...');
   try{
     const prevBal=bk().bal;
     const {backup}=await readDQGistBackup();
@@ -1365,12 +1421,12 @@ async function receiveRoutineTransfers(isManual=true){
     RT=mergeRoutineTransfers(RT,remoteTransfers);
     if(pending.length===0){
       sv(SK.RT,RT);
-      if(isManual)toast('📭 수신할 MyRoutine 이체가 없습니다.');
+      if(isManual)toast('📭 수신할 DQ Loop 이체가 없습니다.');
       render();
       return;
     }
     const total=pending.reduce((s,t)=>s+Number(t.amount||0),0);
-    if(isManual&&!confirm(`MyRoutine 이체 ${pending.length}건, 총 ${W(total)}을 DQ 잔고에 반영할까요?`))return;
+    if(isManual&&!confirm(`DQ Loop 이체 ${pending.length}건, 총 ${W(total)}을 DQ 잔고에 반영할까요?`))return;
     const now=new Date().toISOString();
     pending.forEach(t=>{
       const log=makeRoutineTransferLog(t);
@@ -1388,7 +1444,7 @@ async function receiveRoutineTransfers(isManual=true){
     showFloatText(total,true);
     animateBalance(prevBal,bk().bal);
     explodeParticles(window.innerWidth/2,150,24);
-    toast(`🔗 MyRoutine 이체 수신 완료! +${W(total)}`);
+    toast(`🔗 DQ Loop 이체 수신 완료! +${W(total)}`);
     render();
   }catch(e){
     console.error(e);
@@ -1624,6 +1680,19 @@ function showLevelUpModal(lvData) {
 }
 
 /* ══ ACTIONS ══ */
+function finalizeParentQuestIfComplete(child){
+  const parent=questParent(child);if(!parent||parent.status==='완료')return null;
+  const before=subProgress(parent);
+  if(!before.total||before.done<before.total)return null;
+  const completedAt=new Date().toISOString();
+  const prevPersona=buildPersonaStats();
+  const parentCat=migrateCat(parent.category||child.category||'몸');
+  const gain=personaRewardForQuest(parent,parent.reward,prevPersona,parentCat);
+  QL.push({id:uid(),questId:parent.id,questTitleSnapshot:`🏆 ${parent.title} 완주 보너스`,categorySnapshot:parentCat,difficultySnapshot:parent.difficulty,rewardSnapshot:parent.reward,completedAt,earnedReward:parent.reward,memo:`하위 퀘스트 ${before.done}/${before.total} 완료`,personaCat:parentCat,personaExpGain:gain.exp,styleCoinGain:gain.coins,personaBonusLabel:gain.bonusLabel||'',isParentBonus:true,parentQuestId:parent.id,completedSubCount:before.done,totalSubCount:before.total});
+  parent.completedCount=(parent.completedCount||0)+1;parent.totalEarned=(parent.totalEarned||0)+Number(parent.reward||0);parent.lastCompletedAt=completedAt;parent.status='완료';
+  const personaResult=applyPersonaProgress(parent,prevPersona,gain);
+  return{parent,progress:before,personaResult};
+}
 function doComplete(id,btnEl){
   const q=Q.find(x=>x.id===id);if(!q)return;
   if(q.type==='단발'&&q.status==='완료'){toast('이미 완료된 퀘스트예요 ✓');return}
@@ -1639,13 +1708,15 @@ function doComplete(id,btnEl){
     
     QL.push({id:uid(),questId:q.id,questTitleSnapshot:q.title,categorySnapshot:personaCat,difficultySnapshot:q.difficulty,rewardSnapshot:q.reward,completedAt,earnedReward:q.reward,memo,personaCat,personaExpGain:personaGain.exp,styleCoinGain:personaGain.coins,personaBonusLabel:personaGain.bonusLabel||''});
     q.completedCount=(q.completedCount||0)+1;q.totalEarned=(q.totalEarned||0)+q.reward;q.lastCompletedAt=completedAt;
-    if(q.type==='단발')q.status='완료';
+    if(q.type==='단발'||q.parentId)q.status='완료';
     const personaResult=applyPersonaProgress(q,prevPersona,personaGain);
+    const parentAuto=finalizeParentQuestIfComplete(q);
     const routeFinal=isQuestInTodayRoute(q.id)?finalizeDailyRouteIfComplete():null;
     saveAll();closeM();explodeParticles(cx,cy);setTimeout(()=>flashCard(q.id),100);
     showFloatText(q.reward,true);animateBalance(prevBal,bk().bal);
     toast(q.type==='반복'?`🔁 클리어! +${W(q.reward)}`:`🎉 완료! +${W(q.reward)}`);
     setTimeout(()=>toast(`${PERSONA_CFG[personaResult.cat].emoji} ${personaResult.cat} EXP +${personaResult.gain.exp} · 🪙 +${personaResult.gain.coins}${personaResult.gain.bonusLabel?' · 보너스 적용':''}`),450);
+    if(parentAuto)setTimeout(()=>toast(`🏆 ${parentAuto.parent.title} 완주 보너스 +${W(parentAuto.parent.reward||0)}`),700);
     if(routeFinal)setTimeout(()=>showDailyRouteCompleteModal(routeFinal),950);
     else if(isQuestInTodayRoute(q.id))setTimeout(()=>showDailyRouteProgressToast(),850);
     if(personaResult.leveled)setTimeout(()=>showPersonaLevelUp(personaResult),personaResult.awakened?1050:900);
@@ -1791,7 +1862,47 @@ function getDueStatus(q){
   return'ok';
 }
 
+
+function questParent(q){return q&&q.parentId?Q.find(x=>x.id===q.parentId):null}
+function childQuests(parentId){return Q.filter(x=>x.parentId===parentId).sort((a,b)=>(Number(a.subOrder||0)-Number(b.subOrder||0))||new Date(a.createdAt||0)-new Date(b.createdAt||0))}
+function isParentQuest(q){return !!(q&&childQuests(q.id).length)}
+function isSubQuest(q){return !!(q&&q.parentId)}
+function isStepDone(q){return q&&((q.status==='완료')||(q.parentId&&Number(q.completedCount||0)>0))}
+function topLevelQuests(list){return list.filter(q=>!q.parentId)}
+function isAccordionOpen(id){return OPEN_PARENTS.includes(id)}
+function toggleAccordion(id){OPEN_PARENTS=isAccordionOpen(id)?OPEN_PARENTS.filter(x=>x!==id):[...OPEN_PARENTS,id];saveOpenParents();_uq&&_uq()}
+function subProgress(parent){const subs=childQuests(parent.id);const done=subs.filter(s=>isStepDone(s)).length;return{total:subs.length,done,pct:subs.length?Math.round(done/subs.length*100):0,subs,next:subs.find(s=>s.status!=='완료')||null}}
+function nextSubOrder(parentId){const subs=childQuests(parentId);return subs.length?Math.max(...subs.map(s=>Number(s.subOrder||0)))+1:1}
+function isRecommendableQuest(q){return q&&q.status!=='완료'&&!isStepDone(q)&&!(isParentQuest(q)&&childQuests(q.id).some(s=>!isStepDone(s)))}
+function parentLinkTag(q){const p=questParent(q);return p?`<span class="tag" style="background:var(--blue-bg);color:#93c5fd">🔗 ${esc(p.title)}</span>`:''}
+function subQuestRow(s,idx,parent){
+  const done=isStepDone(s);
+  const current=!done && childQuests(parent.id).filter(x=>!isStepDone(x)).sort((a,b)=>(Number(a.subOrder||0)-Number(b.subOrder||0)))[0]?.id===s.id;
+  const btn=done?'<span class="subquest-reward done">+'+W(s.reward||0)+' ✓</span>':'<button class="btn btn-blue btn-sm" onclick="event.stopPropagation();doComplete(\''+s.id+'\',this)">완료</button>';
+  return `<div class="subquest-row ${done?'done':''} ${current?'current':''}" onclick="event.stopPropagation();questForm('${s.id}')"><div class="subquest-dot"></div><div><div class="subquest-title">${esc(s.title)}</div><div class="subquest-meta">${s.difficulty||'C'}등급 · ${s.type||'단발'} · ${questDueLabel(s)}</div></div><div class="subquest-reward">${btn}</div></div>`;
+}
+function parentQuestCard(q,todayMode=false){
+  const p=subProgress(q),done=q.status==='완료',cat=migrateCat(q.category),open=isAccordionOpen(q.id);
+  const dueStatus=getDueStatus(q);
+  const dueBadge=q.dueDate&&!done?(dueStatus==='overdue'?`<span class="tag tag-overdue">⚠️ 기한초과</span>`:dueStatus==='soon'?`<span class="tag tag-due-soon">🔥 마감임박</span>`:`<span class="tag" style="background:var(--card2);color:var(--t3)">📅 ${FDate(q.dueDate)}</span>`):'';
+  const next=p.next?`<div class="main-next-step">다음 스텝<br><b>${esc(p.next.title)}</b></div>`:'';
+  const rows=open?`<div class="subquest-list">${p.subs.map((s,i)=>subQuestRow(s,i,q)).join('')}<div class="subquest-bonus"><span>🏅 완주 보너스</span><span>+${W(q.reward||0)}</span></div><div class="subquest-actions"><button class="btn btn-purple btn-sm" onclick="event.stopPropagation();questForm(null,null,'${q.id}')">하위 퀘스트 추가</button><button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openConnectQuestModal('${q.id}')">기존 퀘스트 연결</button></div></div>`:'';
+  return `<div class="qcard main-quest${done?' done':''} diff-${q.difficulty}" data-qid="${q.id}">
+    <div onclick="questForm('${q.id}')">
+      <div class="main-quest-headline">🏔️ 메인 퀘스트 <span class="main-mini-label">🔗 ${p.total}단계</span></div>
+      <div class="qcard-head"><div class="qcard-title">${CE[cat]||'📌'} ${esc(q.title)}</div><div class="qcard-reward">완주 +${W(q.reward||0)}</div></div>
+      <div class="qcard-tags"><span class="tag tag-cat">${esc(cat)}</span><span class="tag tag-${q.difficulty}">${q.difficulty}등급</span><span class="tag ${q.type==='반복'?'tag-rep':'tag-sin'}">${q.type==='반복'?'🔄 반복':'1️⃣ 단발'}</span>${dueBadge}</div>
+    </div>
+    <div class="main-progress-wrap"><div class="main-progress-top"><span>하위 퀘스트 진행도</span><span>${p.done} / ${p.total} 완료</span></div><div class="main-progress-track"><div class="main-progress-fill" style="width:${p.pct}%"></div></div></div>
+    ${next}
+    <button class="btn btn-ghost main-accordion-btn" onclick="event.stopPropagation();toggleAccordion('${q.id}')">${open?'▲ 접기':'▼ 하위 퀘스트 보기'}</button>
+    ${rows}
+    <div class="qcard-edit-hint">상단 탭해서 메인 퀘스트 수정 ✏️</div>
+  </div>`;
+}
+
 function qCard(q,todayMode=false){
+  if(isParentQuest(q))return parentQuestCard(q,todayMode);
   const done=q.status==='완료';
   const cat=migrateCat(q.category);
   const dueStatus=getDueStatus(q);
@@ -1820,7 +1931,7 @@ function qCard(q,todayMode=false){
       <span class="tag tag-cat">${esc(cat)}</span>
       <span class="tag tag-${q.difficulty}">${q.difficulty}등급</span>
       <span class="tag ${q.type==='반복'?'tag-rep':'tag-sin'}">${q.type==='반복'?'🔄 반복':'1️⃣ 단발'}</span>
-      ${dueBadge}${startBadge}
+      ${dueBadge}${startBadge}${parentLinkTag(q)}
     </div>
     ${q.story?`<div class="qcard-story">${esc(q.story.substring(0,80))}${q.story.length>80?'...':''}</div>`:''}
     <div class="qcard-foot">
@@ -1860,7 +1971,7 @@ function rCard(r,highlight=false){
 
 function logRow(l,type){
   const isE=type==='q';
-  const pChip=isE&&l.isDailyRouteBonus?`<div class="persona-log-chip">🧭 오늘 루트 완주 보너스 · 스타일 코인은 스타일 로그에 지급</div>`:(isE&&l.personaCat?`<div class="persona-log-chip">${PERSONA_CFG[l.personaCat]?.emoji||'🧬'} ${esc(l.personaCat)} EXP +${Number(l.personaExpGain||0)} · 🪙 +${Number(l.styleCoinGain||0)}${l.personaBonusLabel?' · ⚖️':''}</div>`:'');
+  const pChip=isE&&l.isDailyRouteBonus?`<div class="persona-log-chip">🧭 오늘 루트 완주 보너스 · 스타일 코인은 스타일 로그에 지급</div>`:(isE&&l.isParentBonus?`<div class="persona-log-chip">🏆 메인 퀘스트 완주 · 하위 ${Number(l.completedSubCount||0)}/${Number(l.totalSubCount||0)} · ${PERSONA_CFG[l.personaCat]?.emoji||'🧬'} EXP +${Number(l.personaExpGain||0)} · 🪙 +${Number(l.styleCoinGain||0)}</div>`:(isE&&l.personaCat?`<div class="persona-log-chip">${PERSONA_CFG[l.personaCat]?.emoji||'🧬'} ${esc(l.personaCat)} EXP +${Number(l.personaExpGain||0)} · 🪙 +${Number(l.styleCoinGain||0)}${l.personaBonusLabel?' · ⚖️':''}</div>`:''));
   return`<div class="log-row">
     <div class="log-ico ${isE?'log-ico-earn':'log-ico-spend'}">${isE?'⚔️':'🎁'}</div>
     <div class="log-body">
@@ -1883,15 +1994,20 @@ function getQuestListHTML(){
   if(qT==='추천퀘스트')return getRecommendedQuestListHTML();
   if(qT==='오늘루트')return getDailyRouteHTML();
   let f=Q;
-  if(qT==='진행중')f=Q.filter(q=>q.status==='진행중');
-  else if(qT==='반복')f=Q.filter(q=>q.type==='반복');
-  else if(qT==='단발')f=Q.filter(q=>q.type==='단발');
-  else if(qT==='완료')f=Q.filter(q=>q.status==='완료');
-  else if(qT==='예정')f=Q.filter(q=>q.status==='예정');
+  if(qT==='진행중')f=Q.filter(q=>q.status==='진행중'&&!q.parentId);
+  else if(qT==='메인')f=Q.filter(q=>isParentQuest(q));
+  else if(qT==='반복')f=Q.filter(q=>q.type==='반복'&&!q.parentId);
+  else if(qT==='단발')f=Q.filter(q=>q.type==='단발'&&!q.parentId);
+  else if(qT==='완료')f=Q.filter(q=>q.status==='완료'&&!q.parentId);
+  else if(qT==='예정')f=Q.filter(q=>q.status==='예정'&&!q.parentId);
   
   if(qSearch){
     const s = qSearch.toLowerCase();
-    f=f.filter(q=>q.title.toLowerCase().includes(s)||migrateCat(q.category).toLowerCase().includes(s));
+    f=f.filter(q=>{
+      const p=questParent(q);
+      const childHit=isParentQuest(q)&&childQuests(q.id).some(c=>String(c.title||'').toLowerCase().includes(s)||String(c.condition||'').toLowerCase().includes(s));
+      return q.title.toLowerCase().includes(s)||migrateCat(q.category).toLowerCase().includes(s)||String(q.condition||'').toLowerCase().includes(s)||String(q.story||'').toLowerCase().includes(s)||childHit||(p&&p.title.toLowerCase().includes(s));
+    });
   }
   
   if(qSort==='reward_desc')f=[...f].sort((a,b2)=>b2.reward-a.reward);
@@ -1929,7 +2045,7 @@ window._ul=()=>{
 function renderDash(){
   const b=bk();
   const todayQ=Q.filter(q=>q.status==='진행중'&&(q.dueDate===TODAYSTR||(q.type==='반복'&&q.todayCheck)));
-  const active=Q.filter(q=>q.status==='진행중');
+  const active=Q.filter(q=>q.status==='진행중'&&!q.parentId);
   const overdue=Q.filter(q=>q.status==='진행중'&&q.dueDate&&TODATE(q.dueDate)<TODAY);
   const rL=[...QL].reverse().slice(0,5),rP=[...PL].reverse().slice(0,3);
   let h='';
@@ -1952,9 +2068,29 @@ function renderDash(){
   return h;
 }
 
+function renderQuestTabs(){
+  const primary=[
+    {key:'진행중',label:'진행중',ico:'⚔️'},
+    {key:'추천퀘스트',label:'추천',ico:'🎯'},
+    {key:'오늘루트',label:'오늘',ico:'🧭'},
+    {key:'메인',label:'메인',ico:'🏔️'}
+  ];
+  const secondary=[
+    {key:'반복',label:'반복'},
+    {key:'단발',label:'단발'},
+    {key:'완료',label:'완료'},
+    {key:'예정',label:'예정'},
+    {key:'전체',label:'전체'}
+  ];
+  const setTab=(t, cls, label)=>`<button class="${cls}${qT===t?' on':''}" onclick="qT='${t}';render()">${label}</button>`;
+  return `<div class="quest-tabs-card">
+    <div class="quest-tabs-primary">${primary.map(t=>setTab(t.key,'quest-tab-main',`${t.ico} ${t.label}`)).join('')}</div>
+    <div class="quest-tabs-secondary">${secondary.map(t=>setTab(t.key,'quest-tab-sub',t.label)).join('')}</div>
+  </div>`;
+}
+
 function renderQuests(){
-  const tabs=['진행중','추천퀘스트','오늘루트','반복','단발','완료','예정','전체'];
-  return`<div class="sub-tabs">${tabs.map(t=>`<button class="stab${qT===t?' on':''}" onclick="qT='${t}';render()">${t}</button>`).join('')}</div>
+  return`${renderQuestTabs()}
   <div class="search-bar">
     <input class="search-input" placeholder="🔍 퀘스트 검색..." value="${esc(qSearch)}" oninput="qSearch=this.value; _uq()" type="text">
     <select class="sort-select" onchange="qSort=this.value;render()">
@@ -2232,7 +2368,7 @@ function renderSettings(){
     </div>
   </div>
 
-  <div class="sec-head"><span class="sec-title">🔗 MyRoutine 이체 수신</span></div>
+  <div class="sec-head"><span class="sec-title">🔗 DQ Loop 이체 수신</span></div>
   <div class="setting-item" style="display:block">
     <div style="font-size:12px;color:var(--t2);line-height:1.55;margin-bottom:12px">
       루틴앱에서 보낸 <b>pending</b> 이체 대기열을 Gist에서 읽어 DQ 잔고와 로그에 반영합니다.
@@ -2241,9 +2377,9 @@ function renderSettings(){
       <div class="data-info-row"><span class="data-info-label">대기 이체</span><span class="data-info-value" style="color:var(--yellow)">${routineTransferSummary().pending}건 · ${W(routineTransferSummary().pendingAmount)}</span></div>
       <div class="data-info-row"><span class="data-info-label">반영 완료</span><span class="data-info-value" style="color:var(--green)">${routineTransferSummary().applied}건 · ${W(routineTransferSummary().appliedAmount)}</span></div>
     </div>
-    <button class="btn btn-blue" style="width:100%;justify-content:center" onclick="receiveRoutineTransfers(true)">📥 MyRoutine 이체 수신하기</button>
+    <button class="btn btn-blue" style="width:100%;justify-content:center" onclick="receiveRoutineTransfers(true)">📥 DQ Loop 이체 수신하기</button>
     <div style="font-size:10px;color:var(--t3);margin-top:8px;line-height:1.45">
-      수신 완료 시 DQ 퀘스트 로그에 <b>MyRoutine 루틴 이체</b>로 기록되고, Gist 대기열 상태는 <b>applied</b>로 변경됩니다.
+      수신 완료 시 DQ 퀘스트 로그에 <b>DQ Loop 루틴 이체</b>로 기록되고, Gist 대기열 상태는 <b>applied</b>로 변경됩니다.
     </div>
   </div>
 
@@ -2253,7 +2389,7 @@ function renderSettings(){
     <div class="data-info-row"><span class="data-info-label">📋 퀘스트 로그</span><span class="data-info-value">${QL.length}개</span></div>
     <div class="data-info-row"><span class="data-info-label">🎁 리워드</span><span class="data-info-value">${R.length}개</span></div>
     <div class="data-info-row"><span class="data-info-label">🛒 구매 로그</span><span class="data-info-value">${PL.length}개</span></div>
-    <div class="data-info-row"><span class="data-info-label">🔗 MyRoutine 수신</span><span class="data-info-value">${routineTransferSummary().applied}건 / 대기 ${routineTransferSummary().pending}건</span></div>
+    <div class="data-info-row"><span class="data-info-label">🔗 DQ Loop 수신</span><span class="data-info-value">${routineTransferSummary().applied}건 / 대기 ${routineTransferSummary().pending}건</span></div>
     <div class="data-info-row"><span class="data-info-label">💰 현재 잔고</span><span class="data-info-value" style="color:var(--blue)">${W(b.bal)}</span></div>
     <div class="data-info-row"><span class="data-info-label">📈 총 획득</span><span class="data-info-value" style="color:var(--green)">${W(b.te)}</span></div>
     <div class="data-info-row"><span class="data-info-label">🏅 현재 레벨</span><span class="data-info-value">${getLevel(b.te).emoji} Lv.${getLevel(b.te).level} ${getLevel(b.te).title}</span></div>
@@ -2315,8 +2451,9 @@ function deleteAll(){
 }
 
 /* ══ FORMS (시작일/마감일 레이아웃 개선) ══ */
-function questForm(eid=null,prefillCat=null){
-  const q=eid?Q.find(x=>x.id===eid):{id:uid(),title:'',type:'반복',reward:5000,category:(prefillCat||'몸'),difficulty:'B',status:'진행중',active:true,startDate:'',dueDate:'',condition:'',story:'',note:'',completedCount:0,totalEarned:0,lastCompletedAt:'',createdAt:new Date().toISOString()};
+function questForm(eid=null,prefillCat=null,prefillParentId=''){
+  const parentPref=prefillParentId?Q.find(x=>x.id===prefillParentId):null;
+  const q=eid?Q.find(x=>x.id===eid):{id:uid(),title:'',type:'반복',reward:5000,category:(prefillCat||parentPref?.category||'몸'),difficulty:'B',status:'진행중',active:true,startDate:'',dueDate:'',condition:'',story:'',note:'',parentId:(prefillParentId||''),subOrder:(prefillParentId?nextSubOrder(prefillParentId):0),completedCount:0,totalEarned:0,lastCompletedAt:'',createdAt:new Date().toISOString()};
   const tips={S:'100,000원 이상',A:'20,000~100,000원',B:'5,000~20,000원',C:'1,000~5,000원'};
   const cat=migrateCat(q.category||'몸');
   openM(`<div class="modal-bg" onclick="if(event.target===this)closeM()"><div class="modal">
@@ -2338,7 +2475,9 @@ function questForm(eid=null,prefillCat=null){
       <div class="form-group"><label class="form-label">📅 기한 (마감일)</label><input class="form-input" id="qdue" type="date" value="${q.dueDate||''}"></div>
     </div>
 
-    <div class="form-group"><label class="form-label">보상금 (₩)</label><input class="form-input" id="qr" type="number" value="${q.reward}" min="0"><div class="form-tip" id="qtip">추천: ${tips[q.difficulty]}</div></div>
+    <div class="form-group"><label class="form-label">상위 퀘스트 연결</label><select class="form-select" id="qparent" onchange="document.getElementById('qorder-wrap').style.display=this.value?'block':'none'"><option value="">독립 퀘스트</option>${Q.filter(x=>x.id!==q.id&&!x.parentId).map(x=>`<option value="${x.id}" ${q.parentId===x.id?'selected':''}>${esc(x.title)}</option>`).join('')}</select><div class="form-tip">다른 퀘스트의 하위 단계로 연결하면 부모 카드 안에 아코디언으로 표시됩니다.</div></div>
+    <div class="form-group" id="qorder-wrap" style="display:${q.parentId?'block':'none'}"><label class="form-label">하위 단계 순서</label><input class="form-input" id="qorder" type="number" min="1" value="${q.subOrder||''}" placeholder="자동"></div>
+    <div class="form-group"><label class="form-label">보상금 (₩) ${childQuests(q.id).length?'· 하위 전부 완료 시 완주 보너스':''}</label><input class="form-input" id="qr" type="number" value="${q.reward}" min="0"><div class="form-tip" id="qtip">추천: ${tips[q.difficulty]}</div></div>
     <div class="form-group"><label class="form-label">달성 조건</label><input class="form-input" id="qco" value="${esc(q.condition||'')}" placeholder="달성 조건"></div>
     <div class="form-group"><label class="form-label">스토리</label><textarea class="form-textarea" id="qst">${esc(q.story||'')}</textarea></div>
     <div class="modal-btns">
@@ -2356,13 +2495,25 @@ window._sqf=(id,isE)=>{
     category:document.getElementById('qc').value,difficulty:document.getElementById('qd').value,status,active:true,
     condition:document.getElementById('qco').value,story:document.getElementById('qst').value,note:'',
     dueDate:document.getElementById('qdue').value||'',
-    startDate:document.getElementById('qsd').value||'' // 시작일 항상 저장
+    startDate:document.getElementById('qsd').value||'', // 시작일 항상 저장
+    parentId:(document.getElementById('qparent')?.value||''),
+    subOrder:parseInt(document.getElementById('qorder')?.value)||0
   };
+  if(d.parentId===id)d.parentId='';
+  if(d.parentId&&!d.subOrder)d.subOrder=nextSubOrder(d.parentId);
   if(isE){const i=Q.findIndex(q=>q.id===id);if(i>-1)Q[i]={...Q[i],...d}}
   else{d.completedCount=0;d.totalEarned=0;d.lastCompletedAt='';d.createdAt=new Date().toISOString();Q.push(d)}
   saveAll();closeM();toast(isE?'퀘스트 수정됐어요 ✓':'새 퀘스트 추가! ⚔️');render();
 };
-window._dqf=id=>{if(!confirm('삭제할까요?'))return;Q=Q.filter(q=>q.id!==id);saveAll();closeM();toast('삭제됐어요');render()};
+window._dqf=id=>{const subs=childQuests(id);let msg='삭제할까요?';if(subs.length)msg=`이 퀘스트에는 하위 퀘스트 ${subs.length}개가 있습니다.
+부모만 삭제하고 하위 퀘스트는 독립 퀘스트로 유지할까요?`;if(!confirm(msg))return;subs.forEach(s=>{s.parentId='';s.subOrder=0});Q=Q.filter(q=>q.id!==id);saveAll();closeM();toast('삭제됐어요');render()};
+function openConnectQuestModal(parentId){
+  const parent=Q.find(q=>q.id===parentId);if(!parent)return;
+  const candidates=Q.filter(q=>q.id!==parentId&&!q.parentId&&q.status!=='완료'&&!isParentQuest(q));
+  openM(`<div class="modal-bg" onclick="if(event.target===this)closeM()"><div class="modal"><div class="modal-drag"></div><div class="modal-title">🔗 기존 퀘스트 연결</div><div class="modal-sub">「${esc(parent.title)}」의 하위 퀘스트로 연결할 항목을 선택하세요.</div>${candidates.length?candidates.map(q=>`<div class="qcard diff-${q.difficulty}" style="margin-bottom:8px" onclick="connectQuestToParent('${q.id}','${parentId}')"><div class="qcard-head"><div class="qcard-title">${CE[migrateCat(q.category)]||'📌'} ${esc(q.title)}</div><div class="qcard-reward">${W(q.reward||0)}</div></div><div class="qcard-tags"><span class="tag tag-cat">${esc(migrateCat(q.category))}</span><span class="tag tag-${q.difficulty}">${q.difficulty}등급</span></div></div>`).join(''):`<div class="empty"><div class="empty-ico">📭</div><div class="empty-txt">연결 가능한 독립 퀘스트가 없습니다.</div></div>`}<button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px" onclick="closeM()">닫기</button></div></div>`)
+}
+function connectQuestToParent(qid,parentId){const q=Q.find(x=>x.id===qid),p=Q.find(x=>x.id===parentId);if(!q||!p)return;q.parentId=parentId;q.subOrder=nextSubOrder(parentId);saveAll();closeM();OPEN_PARENTS=[...new Set([...OPEN_PARENTS,parentId])];saveOpenParents();toast('하위 퀘스트로 연결했어요 🔗');render()}
+
 
 function rewardForm(eid=null){
   const r=eid?R.find(x=>x.id===eid):{id:uid(),title:'',cost:10000,rank:'B',rewardModule:'',rules:'',rcat:'food',remoji:'🍜',totalPurchasedCount:0,totalSpent:0,createdAt:new Date().toISOString()};
