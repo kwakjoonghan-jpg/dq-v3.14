@@ -300,7 +300,14 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .form-select option{background:var(--bg2)}
 .form-textarea{resize:vertical;min-height:70px}
 .form-tip{font-size:11px;color:var(--t3);margin-top:4px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:start}
+.g2>*{min-width:0}
+.date-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.date-grid .form-group{min-width:0}
+.form-input[type="date"],.date-input{min-width:0;width:100%;height:48px;padding:10px 8px;font-size:13px;line-height:1.2;text-align:center;color-scheme:dark;-webkit-appearance:none;appearance:none}
+.form-input[type="date"]::-webkit-date-and-time-value,.date-input::-webkit-date-and-time-value{min-height:1.2em;text-align:center;margin:0 auto;padding:0}
+.form-input[type="date"]::-webkit-calendar-picker-indicator,.date-input::-webkit-calendar-picker-indicator{opacity:.7;margin-left:0}
+@media (max-width:360px){.date-grid{gap:8px}.form-input[type="date"],.date-input{font-size:12px;padding-left:6px;padding-right:6px}}
 .modal-btns{display:flex;gap:8px;margin-top:8px}
 /* SUB TABS */
 .sub-tabs{display:flex;gap:4px;margin-bottom:12px;overflow-x:auto;scrollbar-width:none}
@@ -1939,6 +1946,23 @@ function isAccordionOpen(id){return OPEN_PARENTS.includes(id)}
 function toggleAccordion(id){OPEN_PARENTS=isAccordionOpen(id)?OPEN_PARENTS.filter(x=>x!==id):[...OPEN_PARENTS,id];saveOpenParents();_uq&&_uq()}
 function subProgress(parent){const subs=childQuests(parent.id);const done=subs.filter(s=>isStepDone(s)).length;return{total:subs.length,done,pct:subs.length?Math.round(done/subs.length*100):0,subs,next:subs.find(s=>s.status!=='완료')||null}}
 function nextSubOrder(parentId){const subs=childQuests(parentId);return subs.length?Math.max(...subs.map(s=>Number(s.subOrder||0)))+1:1}
+function dashboardQuestPriority(q){
+  const st=getDueStatus(q);
+  if(st==='overdue')return 0;
+  if(st==='soon')return 1;
+  if(isSubQuest(q))return 2;
+  if(isParentQuest(q))return 3;
+  if(q.type==='단발')return 4;
+  if(q.type==='반복')return 5;
+  return 6;
+}
+function dashboardActiveQuests(){
+  return Q.filter(q=>q.status==='진행중').sort((a,b)=>{
+    const dueA=a.dueDate?TODATE(a.dueDate).getTime():8640000000000000;
+    const dueB=b.dueDate?TODATE(b.dueDate).getTime():8640000000000000;
+    return dashboardQuestPriority(a)-dashboardQuestPriority(b)||dueA-dueB||Number(a.subOrder||0)-Number(b.subOrder||0)||new Date(a.createdAt||0)-new Date(b.createdAt||0);
+  });
+}
 function isRecommendableQuest(q){return q&&q.status!=='완료'&&!isStepDone(q)&&!(isParentQuest(q)&&childQuests(q.id).some(s=>!isStepDone(s)))}
 function parentLinkTag(q){const p=questParent(q);return p?`<span class="tag" style="background:var(--blue-bg);color:#93c5fd">🔗 ${esc(p.title)}</span>`:''}
 function subQuestRow(s,idx,parent){
@@ -2153,17 +2177,18 @@ function getQuestListHTML(){
   if(qT==='추천퀘스트')return getRecommendedQuestListHTML();
   if(qT==='오늘루트')return getDailyRouteHTML();
   let base=Q;
-  if(qT==='진행중')base=Q.filter(q=>q.status==='진행중'&&!q.parentId);
+  if(qT==='진행중')base=Q.filter(q=>q.status==='진행중');
   else if(qT==='메인')base=Q.filter(q=>isParentQuest(q));
   else base=Q.filter(q=>!q.parentId);
   let f=applyQuestSearchAndSort(base);
   if(qT==='진행중'&&qFilter==='전체'&&!qSearch){
     const used=new Set();
     const urgent=f.filter(q=>{const st=getDueStatus(q);return st==='overdue'||st==='soon'}); urgent.forEach(q=>used.add(q.id));
+    const sub=f.filter(q=>!used.has(q.id)&&isSubQuest(q)); sub.forEach(q=>used.add(q.id));
     const main=f.filter(q=>!used.has(q.id)&&isParentQuest(q)); main.forEach(q=>used.add(q.id));
-    const normal=f.filter(q=>!used.has(q.id)&&!isParentQuest(q)&&q.type!=='반복'); normal.forEach(q=>used.add(q.id));
-    const repeat=f.filter(q=>!used.has(q.id)&&q.type==='반복');
-    const html=sectionHTML('지금 먼저 할 것',urgent,'🔥')+sectionHTML('메인 퀘스트',main,'🏔️')+sectionHTML('일반 퀘스트',normal,'⚔️')+sectionHTML('반복 퀘스트',repeat,'🔁');
+    const normal=f.filter(q=>!used.has(q.id)&&!isParentQuest(q)&&!isSubQuest(q)&&q.type!=='반복'); normal.forEach(q=>used.add(q.id));
+    const repeat=f.filter(q=>!used.has(q.id)&&!isSubQuest(q)&&q.type==='반복');
+    const html=sectionHTML('지금 먼저 할 것',urgent,'🔥')+sectionHTML('연계 하위 퀘스트',sub,'🔗')+sectionHTML('메인 퀘스트',main,'🏔️')+sectionHTML('일반 퀘스트',normal,'⚔️')+sectionHTML('반복 퀘스트',repeat,'🔁');
     return html||`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">퀘스트가 없어요</div></div>`;
   }
   return f.length===0?`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">퀘스트가 없어요</div></div>`:f.map(q=>qCard(q)).join('');
@@ -2195,7 +2220,7 @@ window._ul=()=>{
 function renderDash(){
   const b=bk();
   const todayQ=Q.filter(q=>q.status==='진행중'&&(q.dueDate===TODAYSTR||(q.type==='반복'&&q.todayCheck)));
-  const active=Q.filter(q=>q.status==='진행중'&&!q.parentId);
+  const active=dashboardActiveQuests();
   const overdue=Q.filter(q=>q.status==='진행중'&&q.dueDate&&TODATE(q.dueDate)<TODAY);
   let h='';
   /* 기한 초과 알림 */
@@ -2601,9 +2626,9 @@ function questForm(eid=null,prefillCat=null,prefillParentId=''){
     </div>
     
     <!-- 시작일과 마감일을 항상 같이 보여줌 -->
-    <div class="g2">
-      <div class="form-group"><label class="form-label">📅 시작일</label><input class="form-input" id="qsd" type="date" value="${q.startDate||''}"></div>
-      <div class="form-group"><label class="form-label">📅 기한 (마감일)</label><input class="form-input" id="qdue" type="date" value="${q.dueDate||''}"></div>
+    <div class="g2 date-grid">
+      <div class="form-group"><label class="form-label">📅 시작일</label><input class="form-input date-input" id="qsd" type="date" value="${q.startDate||''}"></div>
+      <div class="form-group"><label class="form-label">📅 기한 (마감일)</label><input class="form-input date-input" id="qdue" type="date" value="${q.dueDate||''}"></div>
     </div>
 
     <div class="form-group"><label class="form-label">상위 퀘스트 연결</label><select class="form-select" id="qparent" onchange="document.getElementById('qorder-wrap').style.display=this.value?'block':'none'"><option value="">독립 퀘스트</option>${Q.filter(x=>x.id!==q.id&&!x.parentId).map(x=>`<option value="${x.id}" ${q.parentId===x.id?'selected':''}>${esc(x.title)}</option>`).join('')}</select><div class="form-tip">다른 퀘스트의 하위 단계로 연결하면 부모 카드 안에 아코디언으로 표시됩니다.</div></div>
