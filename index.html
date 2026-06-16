@@ -154,6 +154,34 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 .quest-rec-intro{font-size:12px;color:var(--t2);line-height:1.6;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:14px;padding:11px 12px;margin-bottom:10px}.quest-rec-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;margin-bottom:9px;position:relative;overflow:hidden}.quest-rec-card::after{content:'';position:absolute;right:-30px;top:-30px;width:100px;height:100px;background:var(--pbg,rgba(59,130,246,.12));border-radius:50%;pointer-events:none}.quest-rec-head,.quest-rec-title,.quest-rec-meta,.quest-rec-reason,.quest-rec-actions{position:relative;z-index:1}.quest-rec-head{display:flex;justify-content:space-between;gap:8px;font-size:10px;font-weight:900;color:var(--t3);margin-bottom:6px}.quest-rec-rank{color:#60a5fa}.quest-rec-title{font-size:14px;font-weight:950;color:var(--t1);line-height:1.35}.quest-rec-meta{display:flex;gap:5px;flex-wrap:wrap;margin-top:7px}.quest-rec-meta span{font-size:10px;color:var(--t2);background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:999px;padding:2px 7px}.quest-rec-reason{font-size:11px;color:var(--t2);line-height:1.5;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.055);border-radius:10px;padding:7px 9px;margin-top:8px}.quest-rec-actions{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}.quest-rec-actions .btn{flex:1;justify-content:center;min-width:92px}
 @media (max-width:360px){.quest-summary-card{grid-template-columns:repeat(2,1fr)}.quest-toolbar{display:grid;grid-template-columns:1fr 1fr}.quest-toolbar .btn{width:100%}.qcard-actions{flex-direction:column;align-items:stretch}.qcard-actions .btn,.qcard-more{width:100%;justify-content:center}}
 
+/* ── v1.5 타임라인(전체일정) 뷰 ── */
+.tl-strip{display:flex;gap:5px;background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:14px;padding:10px 8px;margin-bottom:14px;overflow-x:auto}
+.tl-strip-day{flex:1;min-width:40px;display:flex;flex-direction:column;align-items:center;gap:5px;padding:4px 2px;border-radius:10px;text-decoration:none}
+.tl-strip-day.today{background:var(--blue-bg);border:1px solid rgba(59,130,246,.35)}
+.tl-strip-dow{font-size:9px;font-weight:850;color:var(--t3)}
+.tl-strip-day.today .tl-strip-dow{color:var(--blue)}
+.tl-strip-date{font-size:13px;font-weight:950;color:var(--t1);line-height:1}
+.tl-strip-day.sat .tl-strip-date{color:#7dd3fc}.tl-strip-day.sun .tl-strip-date{color:#fca5a5}
+.tl-strip-dots{display:flex;gap:2px;min-height:7px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:34px}
+.tl-strip-dot{width:5px;height:5px;border-radius:50%;background:var(--blue)}
+.tl-strip-dot.over{background:var(--red)}.tl-strip-dot.soon{background:#fbbf24}
+.tl-strip-more{font-size:8px;font-weight:900;color:var(--t3)}
+.tl-group{margin-bottom:8px}
+.tl-group-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px 11px;border-radius:12px;margin:13px 0 9px;border:1px solid var(--line);background:rgba(255,255,255,.03)}
+.tl-group-head.over{border-color:rgba(255,78,78,.32);background:rgba(255,78,78,.07)}
+.tl-group-head.today{border-color:rgba(59,130,246,.35);background:var(--blue-bg)}
+.tl-group-head.soon{border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.07)}
+.tl-group-left{display:flex;align-items:center;gap:8px;min-width:0}
+.tl-group-title{font-size:12.5px;font-weight:950;color:var(--t1);white-space:nowrap}
+.tl-group-head.over .tl-group-title{color:#ff9a9a}.tl-group-head.today .tl-group-title{color:#bfdbfe}.tl-group-head.soon .tl-group-title{color:#fcd34d}
+.tl-group-count{font-size:10px;font-weight:850;color:var(--t3);background:rgba(255,255,255,.06);border-radius:999px;padding:2px 8px}
+.tl-group-sum{font-size:11px;font-weight:900;color:#6ee7b7;white-space:nowrap}
+.tl-group-body{position:relative;padding-left:14px}
+.tl-group-body::before{content:'';position:absolute;left:3px;top:4px;bottom:4px;width:2px;background:rgba(255,255,255,.07);border-radius:2px}
+.tl-group-body .qcard{position:relative}
+.tl-group-body .qcard::before{content:'';position:absolute;left:-14px;top:20px;width:9px;height:9px;border-radius:50%;background:var(--t3);box-shadow:0 0 0 3px var(--bg)}
+.tl-group-body.over .qcard::before{background:var(--red)}.tl-group-body.today .qcard::before{background:var(--blue)}.tl-group-body.soon .qcard::before{background:#fbbf24}
+
 /* 오늘의 퀘스트 */
 .today-card{background:linear-gradient(135deg,#1a1f35,#1e2438);border:1px solid rgba(59,130,246,.35);border-radius:var(--r);padding:13px;margin-bottom:8px;cursor:pointer;position:relative;overflow:hidden}
 .today-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--purple))}
@@ -317,13 +345,13 @@ html,body{height:100%;background:var(--bg);color:var(--t1);font-family:'Pretenda
 
 /* ══ QUEST TAB COMPACT LAYOUT v1.4.1 ══ */
 .quest-tabs-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:10px;margin-bottom:12px;box-shadow:0 8px 24px rgba(0,0,0,.10);overflow:hidden}
-.quest-tabs-primary{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:8px}
-.quest-tab-main{min-width:0;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--t3);padding:8px 4px;font-size:11px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:4px;white-space:nowrap}
+.quest-tabs-primary{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:8px}
+.quest-tab-main{min-width:0;background:var(--card2);border:1px solid var(--line);border-radius:12px;color:var(--t3);padding:8px 3px;font-size:10.5px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap}
 .quest-tab-main.on{background:var(--blue-bg);border-color:rgba(59,130,246,.45);color:var(--blue);box-shadow:0 0 12px rgba(59,130,246,.12)}
 .quest-tabs-secondary{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
 .quest-tab-sub{min-width:0;background:rgba(255,255,255,.035);border:1px solid var(--line);border-radius:10px;color:var(--t3);padding:7px 3px;font-size:10px;font-weight:900;cursor:pointer;font-family:inherit;transition:all .15s;text-align:center;white-space:nowrap}
 .quest-tab-sub.on{background:var(--purple-bg);border-color:rgba(139,92,246,.45);color:var(--purple);box-shadow:0 0 12px rgba(139,92,246,.10)}
-@media (max-width:360px){.quest-tabs-primary{grid-template-columns:repeat(2,1fr)}.quest-tabs-secondary{grid-template-columns:repeat(3,1fr)}.quest-tab-main{font-size:11px;padding:8px 3px}.quest-tab-sub{font-size:10px}}
+@media (max-width:360px){.quest-tabs-primary{grid-template-columns:repeat(3,1fr)}.quest-tabs-secondary{grid-template-columns:repeat(3,1fr)}.quest-tab-main{font-size:10px;padding:8px 2px;gap:3px}.quest-tab-sub{font-size:10px}}
 
 
 /* STYLE SHOP FILTER v1.2.6: 모바일에서 모든 페르소나 탭이 항상 보이도록 2단 필터 카드화 */
@@ -2062,13 +2090,35 @@ function manwon(n){return Math.round(Number(n||0)/1000)/10}
 function manwonText(n){const v=manwon(n);return Number.isInteger(v)?`${v}만원`:`${v.toFixed(1)}만원`}
 function normalizeRewardAutoRanks(){if(!Array.isArray(R))R=JSON.parse(JSON.stringify(SR));let changed=false;(R||[]).forEach(r=>{if(!r)return;const ar=rewardAutoRank(r.cost);if(r.rank!==ar){r.rank=ar;changed=true}});return changed}
 function rewardPriceBucket(r){const c=Number(r.cost||0);if(c<100000)return '10만원 미만';if(c<500000)return '10~49만원';if(c<1500000)return '50~149만원';return '150만원 이상'}
+function rewardSearchNorm(v){
+  return String(v||'').normalize('NFKC').toLocaleLowerCase('ko-KR').replace(/[,，]/g,'').replace(/\s+/g,' ').trim();
+}
+function rewardSearchCompact(v){return rewardSearchNorm(v).replace(/[^0-9a-z가-힣ㄱ-ㅎㅏ-ㅣ]+/gi,'')}
+function rewardSearchHaystack(r){
+  const cat=(RC_CATS.find(c=>c.cat===(r.rcat||''))||{}).label||'';
+  const rank=rewardRank(r);
+  return [
+    r.title||'', r.rewardModule||'', r.rules||'', r.rcat||'', cat, r.remoji||'', r.source||'',
+    rewardPriceBucket(r), rewardRankLabel(rank), rank, W(r.cost||0), manwonText(r.cost||0), String(r.cost||0)
+  ].join(' ');
+}
+function rewardMatchesSearch(r,query){
+  const q=rewardSearchNorm(query);
+  if(!q)return true;
+  const hay=rewardSearchNorm(rewardSearchHaystack(r));
+  const hayCompact=rewardSearchCompact(hay);
+  return q.split(' ').filter(Boolean).every(token=>{
+    const compact=rewardSearchCompact(token);
+    return hay.includes(token)||!!compact&&hayCompact.includes(compact);
+  });
+}
 function rewardFilteredList(){
   const b=bk();let f=Array.isArray(R)?[...R]:[];
   f=f.filter(Boolean).map(r=>({...r,cost:Number(r.cost||0),rank:rewardRank(r)}));
   if(rT==='구매가능')f=f.filter(r=>r.cost<=b.bal);
   else if(['S','A','B','C'].includes(rT))f=f.filter(r=>rewardRank(r)===rT);
   if(rCatFilter&&rCatFilter!=='전체')f=f.filter(r=>(r.rcat||'stuff')===rCatFilter);
-  if(rSearch){const s=String(rSearch).toLowerCase();f=f.filter(r=>[r.title||'',r.rewardModule||'',r.rules||'',(RC_CATS.find(c=>c.cat===r.rcat)||{}).label||'',rewardPriceBucket(r)].join(' ').toLowerCase().includes(s));}
+  if(rSearch)f=f.filter(r=>rewardMatchesSearch(r,rSearch));
   const min=rMinMan===''?null:Number(rMinMan)*10000,max=rMaxMan===''?null:Number(rMaxMan)*10000;
   if(min!==null&&!Number.isNaN(min))f=f.filter(r=>Number(r.cost||0)>=min);
   if(max!==null&&!Number.isNaN(max))f=f.filter(r=>Number(r.cost||0)<=max);
@@ -2088,7 +2138,7 @@ function rewardFilterHTML(list){
   const catOptions=cats.map(c=>`<option value="${c}" ${rCatFilter===c?'selected':''}>${c==='전체'?'전체 카테고리':(RC_CATS.find(x=>x.cat===c)?.label||c)}</option>`).join('');
   const rangeChips=[['','', '전체'],[0,9,'~9만원'],[10,49,'10~49만원'],[50,149,'50~149만원'],[150,'','150만원~'],[0,30,'30만원 이하'],[0,100,'100만원 이하']];
   const minv=rMinMan===''?'':String(rMinMan),maxv=rMaxMan===''?'':String(rMaxMan);
-  return `<div class="reward-filter-card"><div class="reward-filter-top"><div class="reward-filter-title">🎁 리워드 찾기</div><div style="display:flex;align-items:center;gap:6px"><button class="reward-chip" onclick="clearRewardFilters()">초기화</button><div class="reward-filter-count">조회 ${list.length}개 / 전체 ${(Array.isArray(R)?R.length:0)}개</div></div></div><div class="reward-filter-grid"><input class="search-input" placeholder="상품명·메모 검색" value="${esc(rSearch)}" oninput="rSearch=this.value;_ur()"><input class="form-input" type="number" placeholder="최소 만원" value="${esc(minv)}" oninput="rMinMan=this.value;_ur()"><input class="form-input" type="number" placeholder="최대 만원" value="${esc(maxv)}" oninput="rMaxMan=this.value;_ur()"></div><div class="reward-chip-row">${rangeChips.map(([mi,ma,l])=>`<button class="reward-chip ${String(mi)===String(rMinMan)&&String(ma)===String(rMaxMan)?'on':''}" onclick="setRewardRange('${mi}','${ma}','${l}')">${l}</button>`).join('')}</div><div class="reward-filter-actions"><select class="reward-sort-select" onchange="rSort=this.value;_ur()"><option value="smart" ${rSort==='smart'?'selected':''}>추천순: 구매가능 먼저</option><option value="cost_asc" ${rSort==='cost_asc'?'selected':''}>낮은 가격순</option><option value="cost_desc" ${rSort==='cost_desc'?'selected':''}>높은 가격순</option><option value="rank" ${rSort==='rank'?'selected':''}>등급순</option><option value="name" ${rSort==='name'?'selected':''}>이름순</option></select><select class="reward-sort-select" onchange="rCatFilter=this.value;_ur()">${catOptions}</select></div><div class="sub-tabs" style="margin-top:9px;margin-bottom:0">${tabs.map(t=>`<button class="stab${rT===t?' on':''}" onclick="rT='${t}';_ur()">${t}</button>`).join('')}</div><div class="rank-auto-note">등급 자동 기준: C 10만원 미만 · B 10~49만원 · A 50~149만원 · S 150만원 이상</div></div>`;
+  return `<div class="reward-filter-card"><div class="reward-filter-top"><div class="reward-filter-title">🎁 리워드 찾기</div><div style="display:flex;align-items:center;gap:6px"><button class="reward-chip" onclick="clearRewardFilters()">초기화</button><div class="reward-filter-count" id="reward-filter-count">조회 ${list.length}개 / 전체 ${(Array.isArray(R)?R.length:0)}개</div></div></div><div class="reward-filter-grid"><input id="reward-search-input" class="search-input" placeholder="상품명·메모 검색" value="${esc(rSearch)}" autocomplete="off" oncompositionstart="window.rewardComposing=true" oncompositionend="window.rewardComposing=false;rSearch=this.value;updateRewardResults()" oninput="rSearch=this.value;if(!window.rewardComposing)updateRewardResults()"><input id="reward-min-input" class="form-input" type="number" placeholder="최소 만원" value="${esc(minv)}" oninput="rMinMan=this.value;updateRewardResults()"><input id="reward-max-input" class="form-input" type="number" placeholder="최대 만원" value="${esc(maxv)}" oninput="rMaxMan=this.value;updateRewardResults()"></div><div class="reward-chip-row">${rangeChips.map(([mi,ma,l])=>`<button class="reward-chip ${String(mi)===String(rMinMan)&&String(ma)===String(rMaxMan)?'on':''}" data-reward-range="1" data-rmin="${mi}" data-rmax="${ma}" onclick="setRewardRange('${mi}','${ma}','${l}')">${l}</button>`).join('')}</div><div class="reward-filter-actions"><select class="reward-sort-select" onchange="rSort=this.value;updateRewardResults()"><option value="smart" ${rSort==='smart'?'selected':''}>추천순: 구매가능 먼저</option><option value="cost_asc" ${rSort==='cost_asc'?'selected':''}>낮은 가격순</option><option value="cost_desc" ${rSort==='cost_desc'?'selected':''}>높은 가격순</option><option value="rank" ${rSort==='rank'?'selected':''}>등급순</option><option value="name" ${rSort==='name'?'selected':''}>이름순</option></select><select class="reward-sort-select" onchange="rCatFilter=this.value;updateRewardResults()">${catOptions}</select></div><div class="sub-tabs" style="margin-top:9px;margin-bottom:0">${tabs.map(t=>`<button class="stab${rT===t?' on':''}" data-reward-tab="${t}" onclick="rT='${t}';updateRewardResults()">${t}</button>`).join('')}</div><div class="rank-auto-note">등급 자동 기준: C 10만원 미만 · B 10~49만원 · A 50~149만원 이상</div></div>`;
 }
 function rewardListHTML(list){
   if(!list.length)return `<div class="empty"><div class="empty-ico">🎁</div><div class="empty-txt">조건에 맞는 리워드가 없어요<br>금액대나 검색어를 줄여보세요</div></div>`;
@@ -2096,7 +2146,22 @@ function rewardListHTML(list){
   buckets.forEach(bucket=>{let items=[];if(bucket==='구매 가능')items=list.filter(r=>r.cost<=b.bal);else items=list.filter(r=>r.cost>b.bal&&rewardPriceBucket(r)===bucket);if(!items.length)return;const icon=bucket==='구매 가능'?'✅':bucket==='150만원 이상'?'👑':'🎯';h+=`<div class="reward-section-title"><span>${icon} ${bucket}</span><span>${items.length}개</span></div>${items.map(r=>rCard(r)).join('')}`});
   return h;
 }
-window._ur=()=>{const el=document.getElementById('reward-wrap');if(el){const list=rewardFilteredList();el.innerHTML=rewardSummaryHTML(list)+rewardFilterHTML(list)+rewardListHTML(list)}};
+function updateRewardControls(list){
+  const total=Array.isArray(R)?R.length:0;
+  const countEl=document.getElementById('reward-filter-count');
+  if(countEl)countEl.textContent=`조회 ${list.length}개 / 전체 ${total}개`;
+  document.querySelectorAll('[data-reward-tab]').forEach(btn=>btn.classList.toggle('on',btn.dataset.rewardTab===rT));
+  document.querySelectorAll('[data-reward-range]').forEach(btn=>btn.classList.toggle('on',String(btn.dataset.rmin)===String(rMinMan)&&String(btn.dataset.rmax)===String(rMaxMan)));
+}
+function updateRewardResults(){
+  const list=rewardFilteredList();
+  const summary=document.getElementById('reward-summary');
+  const rewardList=document.getElementById('reward-list');
+  if(summary)summary.innerHTML=rewardSummaryHTML(list);
+  if(rewardList)rewardList.innerHTML=rewardListHTML(list);
+  updateRewardControls(list);
+}
+window._ur=updateRewardResults;
 
 function rCard(r,highlight=false){
   const b=bk(),ok=b.bal>=r.cost;
@@ -2173,9 +2238,90 @@ function sectionHTML(title,items,emoji){
   if(!items.length)return'';
   return `<div class="quest-section-title"><span>${emoji} ${title}</span><span class="quest-section-count">${items.length}개</span></div>${items.map(q=>qCard(q)).join('')}`;
 }
+/* ── v1.5 타임라인(전체일정) ── */
+function timelineQuests(){
+  /* 미완료 퀘스트만. 하위퀘스트는 부모로 흡수(부모 dueDate 기준 한 덩어리) */
+  const seen=new Set();
+  const list=[];
+  Q.filter(q=>q.status!=='완료').forEach(q=>{
+    if(isSubQuest(q)){
+      const p=questParent(q);
+      if(p&&p.status!=='완료'){if(!seen.has(p.id)){seen.add(p.id);list.push(p)}return;}
+      /* 부모가 없거나 완료된 고아 하위는 단독 노출 */
+    }
+    if(!seen.has(q.id)){seen.add(q.id);list.push(q)}
+  });
+  return list;
+}
+function timelineBucket(q){
+  if(!q.dueDate)return 'none';
+  const d=TODATE(q.dueDate);
+  const diff=Math.round((d-TODAY)/(1000*60*60*24));
+  if(diff<0)return 'over';
+  if(diff===0)return 'today';
+  const dow=TODAY.getDay();
+  const toWeekEnd=(7-dow)%7;             /* 이번 주 일요일까지 남은 일수(일요일 시작 가정 보정) */
+  if(diff<=toWeekEnd||diff<=6)return 'week';
+  if(diff<=toWeekEnd+7||diff<=13)return 'next';
+  if(d.getFullYear()===TODAY.getFullYear()&&d.getMonth()===TODAY.getMonth())return 'month';
+  return 'later';
+}
+function getTimelineHTML(){
+  let base=timelineQuests();
+  /* 검색·필터는 그대로 적용(정렬은 타임라인 자체 날짜순이라 무시) */
+  if(qFilter&&qFilter!=='전체')base=base.filter(questMatchesFilter);
+  if(qSearch){
+    const s=qSearch.toLowerCase();
+    base=base.filter(q=>{
+      const p=questParent(q);
+      const childHit=isParentQuest(q)&&childQuests(q.id).some(c=>String(c.title||'').toLowerCase().includes(s)||String(c.condition||'').toLowerCase().includes(s));
+      return String(q.title||'').toLowerCase().includes(s)||migrateCat(q.category||'').toLowerCase().includes(s)||String(q.condition||'').toLowerCase().includes(s)||childHit||(p&&String(p.title||'').toLowerCase().includes(s));
+    });
+  }
+  const order=['over','today','week','next','month','later','none'];
+  const meta={
+    over:{label:'🔴 기한초과',cls:'over'},
+    today:{label:'📍 오늘',cls:'today'},
+    week:{label:'🗓️ 이번 주',cls:'soon'},
+    next:{label:'📆 다음 주',cls:''},
+    month:{label:'🌙 이번 달',cls:''},
+    later:{label:'⏳ 그 이후',cls:''},
+    none:{label:'♾️ 기한 없음',cls:''}
+  };
+  const groups={};order.forEach(k=>groups[k]=[]);
+  base.forEach(q=>{groups[timelineBucket(q)].push(q)});
+  const dueT=q=>q.dueDate?TODATE(q.dueDate).getTime():8640000000000000;
+  order.forEach(k=>groups[k].sort((a,b)=>dueT(a)-dueT(b)||(b.reward||0)-(a.reward||0)));
+
+  let html=upcomingStripHTML(base);
+  let any=false;
+  order.forEach(k=>{
+    const items=groups[k];if(!items.length)return;any=true;
+    const sum=items.reduce((s,q)=>s+Number(q.reward||0),0);
+    html+=`<div class="tl-group"><div class="tl-group-head ${meta[k].cls}"><div class="tl-group-left"><span class="tl-group-title">${meta[k].label}</span><span class="tl-group-count">${items.length}개</span></div>${sum>0?`<span class="tl-group-sum">${W(sum)}</span>`:''}</div><div class="tl-group-body ${meta[k].cls}">${items.map(q=>qCard(q)).join('')}</div></div>`;
+  });
+  return any?html:`<div class="empty"><div class="empty-ico">🗓️</div><div class="empty-txt">표시할 일정이 없어요</div></div>`;
+}
+function upcomingStripHTML(list){
+  const DOWS=['일','월','화','수','목','금','토'];
+  let cells='';
+  for(let i=0;i<7;i++){
+    const d=new Date(TODAY);d.setDate(TODAY.getDate()+i);d.setHours(0,0,0,0);
+    const key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    const dueHere=list.filter(q=>q.dueDate&&TODATE(q.dueDate).getTime()===d.getTime());
+    const dow=d.getDay();
+    let dots='';
+    dueHere.slice(0,3).forEach(q=>{const st=getDueStatus(q);dots+=`<span class="tl-strip-dot ${st==='overdue'?'over':st==='soon'?'soon':''}"></span>`});
+    if(dueHere.length>3)dots+=`<span class="tl-strip-more">+${dueHere.length-3}</span>`;
+    cells+=`<div class="tl-strip-day ${i===0?'today':''} ${dow===6?'sat':''} ${dow===0?'sun':''}"><span class="tl-strip-dow">${i===0?'오늘':DOWS[dow]}</span><span class="tl-strip-date">${d.getDate()}</span><span class="tl-strip-dots">${dots}</span></div>`;
+  }
+  return `<div class="tl-strip">${cells}</div>`;
+}
+
 function getQuestListHTML(){
   if(qT==='추천퀘스트')return getRecommendedQuestListHTML();
   if(qT==='오늘루트')return getDailyRouteHTML();
+  if(qT==='타임라인')return getTimelineHTML();
   let base=Q;
   if(qT==='진행중')base=Q.filter(q=>q.status==='진행중');
   else if(qT==='메인')base=Q.filter(q=>isParentQuest(q));
@@ -2255,6 +2401,7 @@ function renderQuestSummary(){
 function renderQuestTabs(){
   const primary=[
     {key:'진행중',label:'진행중',ico:'⚔️'},
+    {key:'타임라인',label:'일정',ico:'🗓️'},
     {key:'오늘루트',label:'오늘',ico:'🧭'},
     {key:'추천퀘스트',label:'추천',ico:'🎯'},
     {key:'메인',label:'메인',ico:'🏔️'}
@@ -2264,9 +2411,10 @@ function renderQuestTabs(){
 }
 
 function renderQuests(){
+  const isTL=qT==='타임라인';
   return`${renderQuestSummary()}${renderQuestTabs()}
   <div class="quest-toolbar">
-    <button class="btn btn-ghost" onclick="openQuestFilterModal()">필터: ${questFilterLabel()} · ${questSortLabel()} ▼</button>
+    <button class="btn btn-ghost" onclick="openQuestFilterModal()">필터: ${questFilterLabel()}${isTL?' · 날짜순':` · ${questSortLabel()}`} ▼</button>
     <button class="btn btn-ghost ${qSearchOpen?'on':''}" onclick="qSearchOpen=!qSearchOpen;render()">🔍 검색</button>
   </div>
   <div class="search-bar quest-search-panel ${qSearchOpen?'open':''}">
@@ -2281,7 +2429,7 @@ function renderRewards(){
   normalizeRewardAutoRanks();
   const top=renderMarketModeTabs();
   const list=rewardFilteredList();
-  return top+`<div id="reward-wrap">${rewardSummaryHTML(list)}${rewardFilterHTML(list)}${rewardListHTML(list)}</div>`;
+  return top+`<div id="reward-wrap"><div id="reward-summary">${rewardSummaryHTML(list)}</div>${rewardFilterHTML(list)}<div id="reward-list">${rewardListHTML(list)}</div></div>`;
 }
 
 
