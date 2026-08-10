@@ -1971,25 +1971,31 @@ function isSubQuest(q){return !!(q&&q.parentId)}
 function isStepDone(q){return q&&((q.status==='완료')||(q.parentId&&Number(q.completedCount||0)>0))}
 function topLevelQuests(list){return list.filter(q=>!q.parentId)}
 function isAccordionOpen(id){return OPEN_PARENTS.includes(id)}
-function toggleAccordion(id){OPEN_PARENTS=isAccordionOpen(id)?OPEN_PARENTS.filter(x=>x!==id):[...OPEN_PARENTS,id];saveOpenParents();_uq&&_uq()}
+function toggleAccordion(id){
+  OPEN_PARENTS=isAccordionOpen(id)?OPEN_PARENTS.filter(x=>x!==id):[...OPEN_PARENTS,id];
+  saveOpenParents();
+  // 퀘스트 탭은 목록만 갱신해 스크롤을 유지하고, 홈은 홈 카드만 다시 그립니다.
+  if(pg==='quests'){_uq&&_uq();return}
+  if(pg==='dash'){
+    const m=document.getElementById('main');
+    if(m){const y=m.scrollTop;m.innerHTML=renderDash();m.scrollTop=y;return}
+  }
+  render();
+}
 function subProgress(parent){const subs=childQuests(parent.id);const done=subs.filter(s=>isStepDone(s)).length;return{total:subs.length,done,pct:subs.length?Math.round(done/subs.length*100):0,subs,next:subs.find(s=>s.status!=='완료')||null}}
 function nextSubOrder(parentId){const subs=childQuests(parentId);return subs.length?Math.max(...subs.map(s=>Number(s.subOrder||0)))+1:1}
-function dashboardQuestPriority(q){
-  const st=getDueStatus(q);
-  if(st==='overdue')return 0;
-  if(st==='soon')return 1;
-  if(isSubQuest(q))return 2;
-  if(isParentQuest(q))return 3;
-  if(q.type==='단발')return 4;
-  if(q.type==='반복')return 5;
-  return 6;
+function dashboardDueTime(q){
+  // 연계퀘스트는 부모 + 미완료 하위퀘스트 중 가장 빠른 마감일을 그룹의 마감일로 사용합니다.
+  const group=[q,...childQuests(q.id).filter(s=>!isStepDone(s))];
+  const dueTimes=group.filter(x=>x.dueDate).map(x=>TODATE(x.dueDate).getTime()).filter(Number.isFinite);
+  return dueTimes.length?Math.min(...dueTimes):8640000000000000;
 }
 function dashboardActiveQuests(){
-  return Q.filter(q=>q.status==='진행중').sort((a,b)=>{
-    const dueA=a.dueDate?TODATE(a.dueDate).getTime():8640000000000000;
-    const dueB=b.dueDate?TODATE(b.dueDate).getTime():8640000000000000;
-    return dashboardQuestPriority(a)-dashboardQuestPriority(b)||dueA-dueB||Number(a.subOrder||0)-Number(b.subOrder||0)||new Date(a.createdAt||0)-new Date(b.createdAt||0);
-  });
+  // 홈에서는 하위퀘스트를 별도 카드로 중복 노출하지 않고 부모 카드 안에 묶습니다.
+  // 기한 초과를 포함해 '실제 마감일이 빠른 순'으로 정렬하고 기한 없는 퀘스트는 마지막에 둡니다.
+  return Q.filter(q=>!q.parentId&&(q.status==='진행중'||childQuests(q.id).some(s=>s.status==='진행중'))).sort((a,b)=>
+    dashboardDueTime(a)-dashboardDueTime(b)||new Date(a.createdAt||0)-new Date(b.createdAt||0)
+  );
 }
 function isRecommendableQuest(q){return q&&q.status!=='완료'&&!isStepDone(q)&&!(isParentQuest(q)&&childQuests(q.id).some(s=>!isStepDone(s)))}
 function parentLinkTag(q){const p=questParent(q);return p?`<span class="tag" style="background:var(--blue-bg);color:#93c5fd">🔗 ${esc(p.title)}</span>`:''}
@@ -2367,6 +2373,7 @@ function renderDash(){
   const b=bk();
   const todayQ=Q.filter(q=>q.status==='진행중'&&(q.dueDate===TODAYSTR||(q.type==='반복'&&q.todayCheck)));
   const active=dashboardActiveQuests();
+  const activeCount=Q.filter(q=>q.status==='진행중').length;
   const overdue=Q.filter(q=>q.status==='진행중'&&q.dueDate&&TODATE(q.dueDate)<TODAY);
   let h='';
   /* 기한 초과 알림 */
@@ -2376,7 +2383,7 @@ function renderDash(){
   h+=renderPersonaShowcase();
   h+=renderDailyRouteCard(true);
   if(todayQ.length>0){h+=`<div class="sec-head"><span class="sec-title">📅 오늘의 퀘스트</span></div>`;h+=todayQ.map(q=>qCard(q,true)).join('')}
-  h+=`<div class="sec-head"><span class="sec-title">⚔️ 진행중 퀘스트</span><button class="sec-more" onclick="go('quests')">${active.length}개 →</button></div>`;
+  h+=`<div class="sec-head"><span class="sec-title">⚔️ 진행중 퀘스트 · 마감순</span><button class="sec-more" onclick="go('quests')">${activeCount}개 →</button></div>`;
   h+=active.length===0?`<div class="empty"><div class="empty-ico">🗺️</div><div class="empty-txt">진행중인 퀘스트가 없어요</div></div>`:active.slice(0,3).map(q=>qCard(q)).join('');
   return h;
 }
